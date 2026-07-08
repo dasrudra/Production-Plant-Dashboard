@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+# Documents / Word temporary files
+*.docx
+~$*.docx

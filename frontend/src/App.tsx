@@ -5,7 +5,6 @@ import { KpiCard } from "./components/KpiCard";
 import { MachinePlanTable } from "./components/MachinePlanTable";
 import { TargetCapacityChart } from "./components/TargetCapacityChart";
 import { UtilizationChart } from "./components/UtilizationChart";
-import { WorkbookInfo } from "./components/WorkbookInfo";
 import { analyzeExcelFile } from "./services/excelApi";
 import type { ExcelAnalyzeResponse } from "./types/dashboard";
 import { formatNumber, formatPercent } from "./utils/formatters";
@@ -13,7 +12,8 @@ import { formatNumber, formatPercent } from "./utils/formatters";
 import "./App.css";
 
 function App() {
-  const [dashboardData, setDashboardData] = useState<ExcelAnalyzeResponse | null>(null);
+  const [dashboardData, setDashboardData] =
+    useState<ExcelAnalyzeResponse | null>(null);
   const [selectedFileName, setSelectedFileName] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -97,8 +97,6 @@ function App() {
             <strong>Upload failed:</strong> {errorMessage}
           </div>
         ) : null}
-
-        <WorkbookInfo data={dashboardData} />
 
         <section className="kpi-grid">
           <KpiCard
