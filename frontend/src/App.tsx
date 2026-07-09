@@ -1,6 +1,8 @@
 ﻿import { useState } from "react";
 
 import { ExcelUploader } from "./components/ExcelUploader";
+import { DashboardInsight } from "./components/DashboardInsight";
+import { UploadSuccessBanner } from "./components/UploadSuccessBanner";
 import { KpiCard } from "./components/KpiCard";
 import { MachinePlanTable } from "./components/MachinePlanTable";
 import { StatusSummary } from "./components/StatusSummary";
@@ -108,6 +110,8 @@ function App() {
           </div>
         ) : null}
 
+        <UploadSuccessBanner data={dashboardData} />
+
         <section className="kpi-grid">
           <KpiCard
             title="Monthly Target"
@@ -142,6 +146,7 @@ function App() {
         </section>
 
         <StatusSummary summary={summary} />
+        <DashboardInsight summary={summary} />
 
         <section className="charts-grid">
           <TargetCapacityChart rows={rows} />
