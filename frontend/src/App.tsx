@@ -4,7 +4,6 @@ import { DashboardInsight } from "./components/DashboardInsight";
 import { ExcelUploader } from "./components/ExcelUploader";
 import { KpiCard } from "./components/KpiCard";
 import { MachinePlanTable } from "./components/MachinePlanTable";
-import { ModulePlaceholder } from "./components/ModulePlaceholder";
 import { StatusDistributionChart } from "./components/StatusDistributionChart";
 import { StatusSummary } from "./components/StatusSummary";
 import { TargetCapacityChart } from "./components/TargetCapacityChart";
@@ -19,73 +18,12 @@ import "./App.css";
 const STORAGE_KEY_DASHBOARD_DATA = "kpp-dashboard-latest-data";
 const STORAGE_KEY_FILE_NAME = "kpp-dashboard-latest-file-name";
 
-type PageKey = "dashboard" | "production" | "shipment" | "material" | "reports";
+type PageKey = "dashboard" | "reports";
 
 const NAV_ITEMS: { key: PageKey; label: string }[] = [
   { key: "dashboard", label: "Dashboard" },
-  { key: "production", label: "Production Plan" },
-  { key: "shipment", label: "Shipment" },
-  { key: "material", label: "Material" },
   { key: "reports", label: "Reports" },
 ];
-
-const MODULE_CONTENT: Record<
-  Exclude<PageKey, "dashboard">,
-  { title: string; subtitle: string; items: string[] }
-> = {
-  production: {
-    title: "Production Plan Module",
-    subtitle:
-      "This module will show monthly plan, daily production, production confirmation, downtime, and achievement analysis.",
-    items: [
-      "Daily production update",
-      "Production confirmation summary",
-      "Plan vs actual comparison",
-      "Machine downtime tracking",
-      "Section-wise production performance",
-      "Excel upload for actual production",
-    ],
-  },
-  shipment: {
-    title: "Shipment Dashboard Module",
-    subtitle:
-      "This module will show shipment plan, shipped quantity, pending shipment, delivery status, and order movement.",
-    items: [
-      "Shipment plan overview",
-      "Shipped vs pending quantity",
-      "Buyer or order-wise shipment",
-      "Delivery timeline tracking",
-      "Pending shipment alert",
-      "Excel upload for shipment data",
-    ],
-  },
-  material: {
-    title: "Material Dashboard Module",
-    subtitle:
-      "This module will show raw material stock, consumption, shortage, pending purchase, and material availability.",
-    items: [
-      "Raw material stock overview",
-      "Material consumption summary",
-      "Shortage and risk alert",
-      "Pending PR/PO tracking",
-      "Material availability by item",
-      "Excel upload for material data",
-    ],
-  },
-  reports: {
-    title: "Reports Module",
-    subtitle:
-      "This module will generate management reports from uploaded dashboard data and future stored records.",
-    items: [
-      "Monthly performance report",
-      "Capacity utilization report",
-      "Machine status report",
-      "Shipment performance report",
-      "Material shortage report",
-      "Exportable summary report",
-    ],
-  },
-};
 
 function App() {
   const [activePage, setActivePage] = useState<PageKey>("dashboard");
@@ -129,7 +67,6 @@ function App() {
       }
 
       setDashboardData(result);
-
       localStorage.setItem(STORAGE_KEY_DASHBOARD_DATA, JSON.stringify(result));
       localStorage.setItem(STORAGE_KEY_FILE_NAME, file.name);
     } catch (error) {
@@ -165,8 +102,8 @@ function App() {
             <p className="eyebrow">KPP Division</p>
             <h1>Production Capacity Dashboard</h1>
             <p>
-              Upload the monthly activity plan Excel file to generate the
-              production capacity overview.
+              Upload the monthly activity plan Excel file to generate a summarized
+              production capacity dashboard.
             </p>
           </div>
 
@@ -195,7 +132,7 @@ function App() {
           <div className="dashboard-actions">
             <div>
               <strong>Latest dashboard data is saved in this browser.</strong>
-              <span>It will remain visible after page refresh.</span>
+              <span>Database recording will be added in the next phase.</span>
             </div>
 
             <button type="button" onClick={handleClearDashboard}>
@@ -260,20 +197,67 @@ function App() {
     );
   }
 
+  function renderReportsPage() {
+    return (
+      <section className="reports-page">
+        <div className="module-placeholder-header">
+          <p className="eyebrow">Reports</p>
+          <h1>Saved Dashboard Reports</h1>
+          <p>
+            This page will show uploaded dashboard records after we connect the
+            database. Users will be able to view previous uploads and month-wise
+            dashboard summaries.
+          </p>
+        </div>
+
+        <div className="module-scope-card">
+          <h2>Reports page will include</h2>
+
+          <div className="module-scope-grid">
+            <div className="module-scope-item">
+              <span>✓</span>
+              <strong>Upload history</strong>
+            </div>
+
+            <div className="module-scope-item">
+              <span>✓</span>
+              <strong>Month-wise dashboard records</strong>
+            </div>
+
+            <div className="module-scope-item">
+              <span>✓</span>
+              <strong>View saved machine-wise data</strong>
+            </div>
+
+            <div className="module-scope-item">
+              <span>✓</span>
+              <strong>Compare uploaded months</strong>
+            </div>
+
+            <div className="module-scope-item">
+              <span>✓</span>
+              <strong>Export report summary</strong>
+            </div>
+          </div>
+        </div>
+
+        <div className="module-note-card">
+          <strong>Next development phase</strong>
+          <p>
+            We will add SQLite database support in the backend first. Then this
+            Reports page will read saved dashboard uploads from the database.
+          </p>
+        </div>
+      </section>
+    );
+  }
+
   function renderActivePage() {
     if (activePage === "dashboard") {
       return renderDashboardPage();
     }
 
-    const moduleContent = MODULE_CONTENT[activePage];
-
-    return (
-      <ModulePlaceholder
-        title={moduleContent.title}
-        subtitle={moduleContent.subtitle}
-        items={moduleContent.items}
-      />
-    );
+    return renderReportsPage();
   }
 
   return (
@@ -283,7 +267,7 @@ function App() {
           <div className="brand-mark">KPP</div>
           <div>
             <h1>Plant Dashboard</h1>
-            <p>Production Activity Plan</p>
+            <p>Excel Summary Dashboard</p>
           </div>
         </div>
 
