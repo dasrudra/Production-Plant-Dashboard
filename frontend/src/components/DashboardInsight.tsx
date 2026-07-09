@@ -17,7 +17,7 @@ export function DashboardInsight({ summary }: DashboardInsightProps) {
 
   const attentionText =
     lowCount > 0
-      ? `${lowCount} machine group${lowCount > 1 ? "s are" : " is"} in Low status and needs management attention.`
+      ? `${lowCount} machine group${lowCount > 1 ? "s are" : " is"} in Low status and ${lowCount > 1 ? "need" : "needs"} management attention.`
       : "No machine group is currently in Low status.";
 
   return (
@@ -28,8 +28,8 @@ export function DashboardInsight({ summary }: DashboardInsightProps) {
           Capacity utilization is {formatPercent(summary.capacityUtilization)}
         </h2>
         <p>
-          {attentionText} Current status distribution: {excellentCount} Excellent,{" "}
-          {goodCount} Good, {normalCount} Normal, and {lowCount} Low.
+          {attentionText} Current status distribution: {excellentCount}{" "}
+          Excellent, {goodCount} Good, {normalCount} Normal, and {lowCount} Low.
         </p>
       </div>
 

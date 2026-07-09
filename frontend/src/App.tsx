@@ -6,6 +6,7 @@ import { UploadSuccessBanner } from "./components/UploadSuccessBanner";
 import { KpiCard } from "./components/KpiCard";
 import { MachinePlanTable } from "./components/MachinePlanTable";
 import { StatusSummary } from "./components/StatusSummary";
+import { StatusDistributionChart } from "./components/StatusDistributionChart";
 import { TargetCapacityChart } from "./components/TargetCapacityChart";
 import { UtilizationChart } from "./components/UtilizationChart";
 import { analyzeExcelFile } from "./services/excelApi";
@@ -151,6 +152,7 @@ function App() {
         <section className="charts-grid">
           <TargetCapacityChart rows={rows} />
           <UtilizationChart rows={rows} />
+          <StatusDistributionChart summary={summary} />
         </section>
 
         <MachinePlanTable rows={rows} />

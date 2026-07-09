@@ -825,3 +825,87 @@ tbody tr:hover {
     text-align: left;
   }
 }
+
+/* Status distribution chart */
+.status-chart-card {
+  grid-column: 1 / -1;
+}
+
+.status-chart-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+  align-items: center;
+}
+
+.pie-chart-box {
+  height: 300px;
+}
+
+.chart-total-badge {
+  min-width: 150px;
+  background: #f8fafc;
+  border: 1px solid #dbeafe;
+  border-radius: 18px;
+  padding: 14px 16px;
+  text-align: right;
+}
+
+.chart-total-badge span {
+  display: block;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.chart-total-badge strong {
+  display: block;
+  margin-top: 5px;
+  font-size: 24px;
+  color: #0f172a;
+}
+
+.status-breakdown-list {
+  display: grid;
+  gap: 12px;
+}
+
+.status-breakdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.status-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  box-shadow: 0 0 0 5px rgba(148, 163, 184, 0.12);
+}
+
+.status-breakdown-item strong {
+  display: block;
+  color: #0f172a;
+}
+
+.status-breakdown-item p {
+  margin: 3px 0 0;
+  color: #64748b;
+  font-size: 13px;
+}
+
+@media (max-width: 1000px) {
+  .status-chart-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-total-badge {
+    text-align: left;
+  }
+}
