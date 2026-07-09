@@ -4,6 +4,7 @@ import { DashboardInsight } from "./components/DashboardInsight";
 import { ExcelUploader } from "./components/ExcelUploader";
 import { KpiCard } from "./components/KpiCard";
 import { MachinePlanTable } from "./components/MachinePlanTable";
+import { ModulePlaceholder } from "./components/ModulePlaceholder";
 import { StatusDistributionChart } from "./components/StatusDistributionChart";
 import { StatusSummary } from "./components/StatusSummary";
 import { TargetCapacityChart } from "./components/TargetCapacityChart";
@@ -18,7 +19,76 @@ import "./App.css";
 const STORAGE_KEY_DASHBOARD_DATA = "kpp-dashboard-latest-data";
 const STORAGE_KEY_FILE_NAME = "kpp-dashboard-latest-file-name";
 
+type PageKey = "dashboard" | "production" | "shipment" | "material" | "reports";
+
+const NAV_ITEMS: { key: PageKey; label: string }[] = [
+  { key: "dashboard", label: "Dashboard" },
+  { key: "production", label: "Production Plan" },
+  { key: "shipment", label: "Shipment" },
+  { key: "material", label: "Material" },
+  { key: "reports", label: "Reports" },
+];
+
+const MODULE_CONTENT: Record<
+  Exclude<PageKey, "dashboard">,
+  { title: string; subtitle: string; items: string[] }
+> = {
+  production: {
+    title: "Production Plan Module",
+    subtitle:
+      "This module will show monthly plan, daily production, production confirmation, downtime, and achievement analysis.",
+    items: [
+      "Daily production update",
+      "Production confirmation summary",
+      "Plan vs actual comparison",
+      "Machine downtime tracking",
+      "Section-wise production performance",
+      "Excel upload for actual production",
+    ],
+  },
+  shipment: {
+    title: "Shipment Dashboard Module",
+    subtitle:
+      "This module will show shipment plan, shipped quantity, pending shipment, delivery status, and order movement.",
+    items: [
+      "Shipment plan overview",
+      "Shipped vs pending quantity",
+      "Buyer or order-wise shipment",
+      "Delivery timeline tracking",
+      "Pending shipment alert",
+      "Excel upload for shipment data",
+    ],
+  },
+  material: {
+    title: "Material Dashboard Module",
+    subtitle:
+      "This module will show raw material stock, consumption, shortage, pending purchase, and material availability.",
+    items: [
+      "Raw material stock overview",
+      "Material consumption summary",
+      "Shortage and risk alert",
+      "Pending PR/PO tracking",
+      "Material availability by item",
+      "Excel upload for material data",
+    ],
+  },
+  reports: {
+    title: "Reports Module",
+    subtitle:
+      "This module will generate management reports from uploaded dashboard data and future stored records.",
+    items: [
+      "Monthly performance report",
+      "Capacity utilization report",
+      "Machine status report",
+      "Shipment performance report",
+      "Material shortage report",
+      "Exportable summary report",
+    ],
+  },
+};
+
 function App() {
+  const [activePage, setActivePage] = useState<PageKey>("dashboard");
   const [dashboardData, setDashboardData] = useState<ExcelAnalyzeResponse | null>(null);
   const [selectedFileName, setSelectedFileName] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
@@ -87,27 +157,9 @@ function App() {
   const summary = dashboardData?.summary;
   const rows = dashboardData?.machineRows ?? [];
 
-  return (
-    <div className="app-shell">
-      <aside className="sidebar">
-        <div className="brand-block">
-          <div className="brand-mark">KPP</div>
-          <div>
-            <h1>Plant Dashboard</h1>
-            <p>Production Activity Plan</p>
-          </div>
-        </div>
-
-        <nav className="side-nav">
-          <a className="active">Dashboard</a>
-          <a>Production Plan</a>
-          <a>Shipment</a>
-          <a>Material</a>
-          <a>Reports</a>
-        </nav>
-      </aside>
-
-      <main className="main-content">
+  function renderDashboardPage() {
+    return (
+      <>
         <header className="page-header">
           <div>
             <p className="eyebrow">KPP Division</p>
@@ -204,7 +256,52 @@ function App() {
         </section>
 
         <MachinePlanTable rows={rows} />
-      </main>
+      </>
+    );
+  }
+
+  function renderActivePage() {
+    if (activePage === "dashboard") {
+      return renderDashboardPage();
+    }
+
+    const moduleContent = MODULE_CONTENT[activePage];
+
+    return (
+      <ModulePlaceholder
+        title={moduleContent.title}
+        subtitle={moduleContent.subtitle}
+        items={moduleContent.items}
+      />
+    );
+  }
+
+  return (
+    <div className="app-shell">
+      <aside className="sidebar">
+        <div className="brand-block">
+          <div className="brand-mark">KPP</div>
+          <div>
+            <h1>Plant Dashboard</h1>
+            <p>Production Activity Plan</p>
+          </div>
+        </div>
+
+        <nav className="side-nav">
+          {NAV_ITEMS.map((item) => (
+            <button
+              key={item.key}
+              type="button"
+              className={activePage === item.key ? "active" : ""}
+              onClick={() => setActivePage(item.key)}
+            >
+              {item.label}
+            </button>
+          ))}
+        </nav>
+      </aside>
+
+      <main className="main-content">{renderActivePage()}</main>
     </div>
   );
 }
