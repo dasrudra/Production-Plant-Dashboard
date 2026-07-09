@@ -38,3 +38,11 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+
+# Documents and temporary Office files
+*.docx
+~$*.docx
+
+# Documents and temporary Office files
+*.docx
+~$*.docx

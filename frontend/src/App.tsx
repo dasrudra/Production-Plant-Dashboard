@@ -12,8 +12,7 @@ import { formatNumber, formatPercent } from "./utils/formatters";
 import "./App.css";
 
 function App() {
-  const [dashboardData, setDashboardData] =
-    useState<ExcelAnalyzeResponse | null>(null);
+  const [dashboardData, setDashboardData] = useState<ExcelAnalyzeResponse | null>(null);
   const [selectedFileName, setSelectedFileName] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -81,8 +80,17 @@ function App() {
           </div>
 
           <div className="header-meta">
-            <span>{summary?.month || "Month not uploaded"}</span>
-            <strong>{summary?.workingSection || "Section not uploaded"}</strong>
+            <div className="meta-item">
+              <span>Plan Month</span>
+              <strong>{summary?.month || "Not uploaded"}</strong>
+            </div>
+
+            <div className="meta-divider" />
+
+            <div className="meta-item">
+              <span>Working Section</span>
+              <strong>{summary?.workingSection || "Not uploaded"}</strong>
+            </div>
           </div>
         </header>
 

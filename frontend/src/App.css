@@ -534,3 +534,35 @@ tbody tr:hover {
     padding: 22px;
   }
 }
+
+/* Header month and section display */
+.header-meta {
+  gap: 12px;
+  text-align: left;
+}
+
+.meta-item {
+  display: grid;
+  gap: 5px;
+}
+
+.meta-item span {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.meta-item strong {
+  font-size: 22px;
+  font-weight: 950;
+  letter-spacing: -0.04em;
+  color: #0f172a;
+}
+
+.meta-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #bfdbfe, transparent);
+}
