@@ -3,6 +3,7 @@
 import { ExcelUploader } from "./components/ExcelUploader";
 import { KpiCard } from "./components/KpiCard";
 import { MachinePlanTable } from "./components/MachinePlanTable";
+import { StatusSummary } from "./components/StatusSummary";
 import { TargetCapacityChart } from "./components/TargetCapacityChart";
 import { UtilizationChart } from "./components/UtilizationChart";
 import { analyzeExcelFile } from "./services/excelApi";
@@ -12,7 +13,8 @@ import { formatNumber, formatPercent } from "./utils/formatters";
 import "./App.css";
 
 function App() {
-  const [dashboardData, setDashboardData] = useState<ExcelAnalyzeResponse | null>(null);
+  const [dashboardData, setDashboardData] =
+    useState<ExcelAnalyzeResponse | null>(null);
   const [selectedFileName, setSelectedFileName] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -138,6 +140,8 @@ function App() {
             subtitle="Machine categories found"
           />
         </section>
+
+        <StatusSummary summary={summary} />
 
         <section className="charts-grid">
           <TargetCapacityChart rows={rows} />
