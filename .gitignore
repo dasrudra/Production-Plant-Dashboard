@@ -46,3 +46,9 @@ Thumbs.db
 # Documents and temporary Office files
 *.docx
 ~$*.docx
+
+# Local database files
+backend/data/*.db
+backend/data/*.sqlite
+backend/data/*.sqlite3
+!backend/data/.gitkeep

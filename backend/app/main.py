@@ -1,15 +1,16 @@
 ﻿from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import excel
+from app.database.db import initialize_database
+from app.routers import excel, reports
 
 app = FastAPI(
     title="KPP Plant Dashboard API",
-    description="Backend API for KPP Plant Dashboard Excel upload and production planning dashboard.",
+    description="Backend API for KPP Plant Dashboard Excel upload, database storage, and reports.",
     version="1.0.0",
 )
 
-# This allows the future React frontend to communicate with this backend.
+# This allows the React frontend to communicate with this backend.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -20,6 +21,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.on_event("startup")
+def on_startup():
+    initialize_database()
 
 
 @app.get("/")
@@ -38,3 +44,4 @@ def health_check():
 
 
 app.include_router(excel.router, prefix="/api/excel", tags=["Excel"])
+app.include_router(reports.router, prefix="/api/reports", tags=["Reports"])

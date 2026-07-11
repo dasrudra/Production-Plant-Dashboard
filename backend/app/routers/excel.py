@@ -3,6 +3,7 @@ from uuid import uuid4
 
 from fastapi import APIRouter, File, HTTPException, UploadFile
 
+from app.services.dashboard_storage import save_dashboard_upload
 from app.services.excel_parser import analyze_capacity_plan_excel
 
 router = APIRouter()
@@ -16,7 +17,7 @@ ALLOWED_EXTENSIONS = {".xlsx", ".xlsm"}
 @router.post("/analyze")
 async def analyze_excel(file: UploadFile = File(...)):
     """
-    Upload and analyze KPP Production Activity Plan Excel file.
+    Upload, analyze, and save KPP Production Activity Plan Excel file.
     """
     original_filename = file.filename or "uploaded_file.xlsx"
     file_extension = Path(original_filename).suffix.lower()
@@ -37,6 +38,21 @@ async def analyze_excel(file: UploadFile = File(...)):
             saved_file.write(file_content)
 
         result = analyze_capacity_plan_excel(saved_file_path)
+
+        if not result.get("success"):
+            return result
+
+        result["fileName"] = original_filename
+        result["savedFileName"] = saved_file_name
+
+        upload_id = save_dashboard_upload(
+            original_file_name=original_filename,
+            saved_file_name=saved_file_name,
+            dashboard_result=result,
+        )
+
+        result["uploadId"] = upload_id
+        result["message"] = "Excel file analyzed and saved successfully."
 
         return result
 
