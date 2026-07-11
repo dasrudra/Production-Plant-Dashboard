@@ -201,8 +201,18 @@ function App() {
     );
   }
 
+  function handleOpenSavedDashboard(data: ExcelAnalyzeResponse) {
+    setDashboardData(data);
+    setSelectedFileName(data.fileName);
+    setErrorMessage("");
+    setActivePage("dashboard");
+
+    localStorage.setItem(STORAGE_KEY_DASHBOARD_DATA, JSON.stringify(data));
+    localStorage.setItem(STORAGE_KEY_FILE_NAME, data.fileName);
+  }
+
   function renderReportsPage() {
-    return <ReportsPage />;
+    return <ReportsPage onOpenDashboard={handleOpenSavedDashboard} />;
   }
 
   function renderActivePage() {

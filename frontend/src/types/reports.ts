@@ -1,4 +1,6 @@
-﻿export type ReportUploadSummary = {
+﻿import type { DashboardSummary, MachinePlanRow } from "./dashboard";
+
+export type ReportUploadSummary = {
   id: number;
   fileName: string;
   sourceSheet: string;
@@ -15,7 +17,21 @@
   createdAt: string;
 };
 
+export type ReportUploadDetail = {
+  id: number;
+  fileName: string;
+  sourceSheet: string;
+  summary: DashboardSummary;
+  machineRows: MachinePlanRow[];
+  createdAt: string;
+};
+
 export type ReportUploadsResponse = {
   success: boolean;
   uploads: ReportUploadSummary[];
+};
+
+export type ReportUploadDetailResponse = {
+  success: boolean;
+  upload: ReportUploadDetail;
 };

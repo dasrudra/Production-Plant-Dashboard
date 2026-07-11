@@ -1297,3 +1297,30 @@ tbody tr:hover {
     width: 100%;
   }
 }
+
+/* Reports table action button */
+.open-report-button {
+  border: 0;
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-weight: 900;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    background 0.22s ease;
+}
+
+.open-report-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  background: #1d4ed8;
+  box-shadow: 0 12px 24px rgba(37, 99, 235, 0.2);
+}
+
+.open-report-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}

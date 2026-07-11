@@ -1,12 +1,21 @@
 ﻿import { useEffect, useState } from "react";
 
-import { getReportUploads } from "../services/reportsApi";
+import {
+  getReportUploadDetail,
+  getReportUploads,
+} from "../services/reportsApi";
+import type { ExcelAnalyzeResponse } from "../types/dashboard";
 import type { ReportUploadSummary } from "../types/reports";
 import { formatNumber, formatPercent } from "../utils/formatters";
 
-export function ReportsPage() {
+type ReportsPageProps = {
+  onOpenDashboard: (data: ExcelAnalyzeResponse) => void;
+};
+
+export function ReportsPage({ onOpenDashboard }: ReportsPageProps) {
   const [uploads, setUploads] = useState<ReportUploadSummary[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [openingUploadId, setOpeningUploadId] = useState<number | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
 
   async function loadReports() {
@@ -28,6 +37,40 @@ export function ReportsPage() {
     }
   }
 
+  async function handleOpenDashboard(uploadId: number) {
+    setOpeningUploadId(uploadId);
+    setErrorMessage("");
+
+    try {
+      const result = await getReportUploadDetail(uploadId);
+      const upload = result.upload;
+
+      const dashboardData: ExcelAnalyzeResponse = {
+        success: true,
+        message: "Saved dashboard loaded from database.",
+        fileName: upload.fileName,
+        workbookSheets: [upload.sourceSheet],
+        sourceSheet: upload.sourceSheet,
+        activeSheets: [upload.sourceSheet],
+        excludedSheets: [],
+        referenceSheets: [],
+        summary: upload.summary,
+        machineRows: upload.machineRows,
+      };
+
+      onOpenDashboard(dashboardData);
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Failed to open saved dashboard.";
+
+      setErrorMessage(message);
+    } finally {
+      setOpeningUploadId(null);
+    }
+  }
+
   useEffect(() => {
     loadReports();
   }, []);
@@ -38,8 +81,8 @@ export function ReportsPage() {
         <p className="eyebrow">Reports</p>
         <h1>Saved Dashboard Reports</h1>
         <p>
-          View Excel uploads saved in the database. Each record represents a
-          summarized production capacity dashboard generated from the Plan-KPP sheet.
+          View Excel uploads saved in the database. Open any saved record to load
+          the dashboard again with its saved KPI, chart, and machine-wise data.
         </p>
       </div>
 
@@ -86,10 +129,9 @@ export function ReportsPage() {
                   <th>Target</th>
                   <th>Capacity</th>
                   <th>Utilization</th>
-                  <th>Active Labour</th>
-                  <th>Active Machine</th>
                   <th>Machine Count</th>
                   <th>Uploaded At</th>
+                  <th>Action</th>
                 </tr>
               </thead>
 
@@ -103,10 +145,20 @@ export function ReportsPage() {
                     <td>{formatNumber(upload.monthlyTarget)}</td>
                     <td>{formatNumber(upload.monthlyCapacity)}</td>
                     <td>{formatPercent(upload.capacityUtilization)}</td>
-                    <td>{formatNumber(upload.activeLabor)}</td>
-                    <td>{formatNumber(upload.activeMachine)}</td>
                     <td>{formatNumber(upload.machineCount)}</td>
                     <td>{upload.createdAt}</td>
+                    <td>
+                      <button
+                        type="button"
+                        className="open-report-button"
+                        onClick={() => handleOpenDashboard(upload.id)}
+                        disabled={openingUploadId === upload.id}
+                      >
+                        {openingUploadId === upload.id
+                          ? "Opening..."
+                          : "Open Dashboard"}
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
