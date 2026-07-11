@@ -12,6 +12,7 @@ import { UtilizationChart } from "./components/UtilizationChart";
 import { analyzeExcelFile } from "./services/excelApi";
 import type { ExcelAnalyzeResponse } from "./types/dashboard";
 import { formatNumber, formatPercent } from "./utils/formatters";
+import { ReportsPage } from "./components/ReportsPage";
 
 import "./App.css";
 
@@ -27,7 +28,8 @@ const NAV_ITEMS: { key: PageKey; label: string }[] = [
 
 function App() {
   const [activePage, setActivePage] = useState<PageKey>("dashboard");
-  const [dashboardData, setDashboardData] = useState<ExcelAnalyzeResponse | null>(null);
+  const [dashboardData, setDashboardData] =
+    useState<ExcelAnalyzeResponse | null>(null);
   const [selectedFileName, setSelectedFileName] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -38,7 +40,9 @@ function App() {
 
     if (savedDashboardData) {
       try {
-        const parsedData = JSON.parse(savedDashboardData) as ExcelAnalyzeResponse;
+        const parsedData = JSON.parse(
+          savedDashboardData,
+        ) as ExcelAnalyzeResponse;
         setDashboardData(parsedData);
       } catch {
         localStorage.removeItem(STORAGE_KEY_DASHBOARD_DATA);
@@ -102,8 +106,8 @@ function App() {
             <p className="eyebrow">KPP Division</p>
             <h1>Production Capacity Dashboard</h1>
             <p>
-              Upload the monthly activity plan Excel file to generate a summarized
-              production capacity dashboard.
+              Upload the monthly activity plan Excel file to generate a
+              summarized production capacity dashboard.
             </p>
           </div>
 
@@ -198,58 +202,7 @@ function App() {
   }
 
   function renderReportsPage() {
-    return (
-      <section className="reports-page">
-        <div className="module-placeholder-header">
-          <p className="eyebrow">Reports</p>
-          <h1>Saved Dashboard Reports</h1>
-          <p>
-            This page will show uploaded dashboard records after we connect the
-            database. Users will be able to view previous uploads and month-wise
-            dashboard summaries.
-          </p>
-        </div>
-
-        <div className="module-scope-card">
-          <h2>Reports page will include</h2>
-
-          <div className="module-scope-grid">
-            <div className="module-scope-item">
-              <span>✓</span>
-              <strong>Upload history</strong>
-            </div>
-
-            <div className="module-scope-item">
-              <span>✓</span>
-              <strong>Month-wise dashboard records</strong>
-            </div>
-
-            <div className="module-scope-item">
-              <span>✓</span>
-              <strong>View saved machine-wise data</strong>
-            </div>
-
-            <div className="module-scope-item">
-              <span>✓</span>
-              <strong>Compare uploaded months</strong>
-            </div>
-
-            <div className="module-scope-item">
-              <span>✓</span>
-              <strong>Export report summary</strong>
-            </div>
-          </div>
-        </div>
-
-        <div className="module-note-card">
-          <strong>Next development phase</strong>
-          <p>
-            We will add SQLite database support in the backend first. Then this
-            Reports page will read saved dashboard uploads from the database.
-          </p>
-        </div>
-      </section>
-    );
+    return <ReportsPage />;
   }
 
   function renderActivePage() {
