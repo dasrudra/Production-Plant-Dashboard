@@ -1,13 +1,17 @@
 ﻿type ExcelUploaderProps = {
   selectedFileName?: string;
   isLoading: boolean;
+  hasDashboardData?: boolean;
   onFileSelect: (file: File) => void;
+  onClearDashboard?: () => void;
 };
 
 export function ExcelUploader({
   selectedFileName,
   isLoading,
+  hasDashboardData = false,
   onFileSelect,
+  onClearDashboard,
 }: ExcelUploaderProps) {
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -20,29 +24,37 @@ export function ExcelUploader({
   }
 
   return (
-    <div className="upload-card">
-      <div>
-        <h2>Upload Production Activity Plan</h2>
-        <p>
-          Upload the Excel workbook. The system will read only the Plan-KPP sheet
-          and ignore Sheet1.
-        </p>
+    <div className="hero-upload-panel">
+      <div className="hero-button-row">
+        <label className="upload-button hero-upload-button">
+          {isLoading ? "Analyzing..." : "Choose Excel File"}
+          <input
+            type="file"
+            accept=".xlsx,.xlsm"
+            onChange={handleChange}
+            disabled={isLoading}
+          />
+        </label>
+
+        {hasDashboardData && onClearDashboard ? (
+          <button
+            type="button"
+            className="hero-clear-button"
+            onClick={onClearDashboard}
+          >
+            Clear Dashboard
+          </button>
+        ) : null}
       </div>
 
-      <label className="upload-button">
-        {isLoading ? "Analyzing..." : "Choose Excel File"}
-        <input
-          type="file"
-          accept=".xlsx,.xlsm"
-          onChange={handleChange}
-          disabled={isLoading}
-        />
-      </label>
-
       {selectedFileName ? (
-        <div className="selected-file">Selected file: {selectedFileName}</div>
+        <div className="selected-file hero-selected-file">
+          Selected file: {selectedFileName}
+        </div>
       ) : (
-        <div className="selected-file muted">No file uploaded yet.</div>
+        <div className="selected-file hero-selected-file muted">
+          No file selected yet.
+        </div>
       )}
     </div>
   );

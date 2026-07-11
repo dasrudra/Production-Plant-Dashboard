@@ -5,7 +5,6 @@ import { ExcelUploader } from "./components/ExcelUploader";
 import { KpiCard } from "./components/KpiCard";
 import { MachinePlanTable } from "./components/MachinePlanTable";
 import { StatusDistributionChart } from "./components/StatusDistributionChart";
-import { StatusSummary } from "./components/StatusSummary";
 import { TargetCapacityChart } from "./components/TargetCapacityChart";
 import { UploadSuccessBanner } from "./components/UploadSuccessBanner";
 import { UtilizationChart } from "./components/UtilizationChart";
@@ -101,14 +100,30 @@ function App() {
   function renderDashboardPage() {
     return (
       <>
-        <header className="page-header">
-          <div>
+        <header className="page-header dashboard-hero">
+          <div className="hero-left-content">
             <p className="eyebrow">KPP Division</p>
             <h1>Production Capacity Dashboard</h1>
             <p>
               Upload the monthly activity plan Excel file to generate a
               summarized production capacity dashboard.
             </p>
+
+            <ExcelUploader
+              selectedFileName={selectedFileName}
+              isLoading={isLoading}
+              hasDashboardData={Boolean(dashboardData)}
+              onFileSelect={handleFileSelect}
+              onClearDashboard={handleClearDashboard}
+            />
+
+            {errorMessage ? (
+              <div className="error-box hero-error-box">
+                <strong>Upload failed:</strong> {errorMessage}
+              </div>
+            ) : null}
+
+            <UploadSuccessBanner data={dashboardData} />
           </div>
 
           <div className="header-meta">
@@ -125,33 +140,6 @@ function App() {
             </div>
           </div>
         </header>
-
-        <ExcelUploader
-          selectedFileName={selectedFileName}
-          isLoading={isLoading}
-          onFileSelect={handleFileSelect}
-        />
-
-        {dashboardData ? (
-          <div className="dashboard-actions">
-            <div>
-              <strong>Latest dashboard data is saved in this browser.</strong>
-              <span>Database recording will be added in the next phase.</span>
-            </div>
-
-            <button type="button" onClick={handleClearDashboard}>
-              Clear Dashboard
-            </button>
-          </div>
-        ) : null}
-
-        {errorMessage ? (
-          <div className="error-box">
-            <strong>Upload failed:</strong> {errorMessage}
-          </div>
-        ) : null}
-
-        <UploadSuccessBanner data={dashboardData} />
 
         <section className="kpi-grid">
           <KpiCard
@@ -185,8 +173,6 @@ function App() {
             subtitle="Machine categories found"
           />
         </section>
-
-        <StatusSummary summary={summary} />
 
         <DashboardInsight summary={summary} />
 
