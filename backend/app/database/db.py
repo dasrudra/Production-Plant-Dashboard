@@ -4,8 +4,14 @@ import sqlite3
 from pathlib import Path
 
 
-BASE_DIR = Path(__file__).resolve().parents[3]
-DATA_DIR = BASE_DIR / "data"
+# db.py location:
+# backend/app/database/db.py
+#
+# parents[0] = backend/app/database
+# parents[1] = backend/app
+# parents[2] = backend
+BACKEND_DIR = Path(__file__).resolve().parents[2]
+DATA_DIR = BACKEND_DIR / "data"
 DB_PATH = DATA_DIR / "kpp_dashboard.db"
 
 

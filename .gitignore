@@ -52,3 +52,9 @@ backend/data/*.db
 backend/data/*.sqlite
 backend/data/*.sqlite3
 !backend/data/.gitkeep
+
+# Safety ignore for accidental root database folder
+data/
+*.db
+*.sqlite
+*.sqlite3
