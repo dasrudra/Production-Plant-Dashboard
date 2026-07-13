@@ -9,7 +9,9 @@ export async function getReportUploads(): Promise<ReportUploadsResponse> {
   const response = await fetch(`${API_BASE_URL}/api/reports/uploads`);
 
   if (!response.ok) {
-    throw new Error(`Failed to load report uploads. Server returned ${response.status}.`);
+    throw new Error(
+      `Failed to load report uploads. Server returned ${response.status}.`,
+    );
   }
 
   return response.json();
@@ -18,11 +20,28 @@ export async function getReportUploads(): Promise<ReportUploadsResponse> {
 export async function getReportUploadDetail(
   uploadId: number,
 ): Promise<ReportUploadDetailResponse> {
-  const response = await fetch(`${API_BASE_URL}/api/reports/uploads/${uploadId}`);
+  const response = await fetch(
+    `${API_BASE_URL}/api/reports/uploads/${uploadId}`,
+  );
 
   if (!response.ok) {
-    throw new Error(`Failed to load report detail. Server returned ${response.status}.`);
+    throw new Error(
+      `Failed to load report detail. Server returned ${response.status}.`,
+    );
   }
 
   return response.json();
+}
+
+export async function getLatestReportUploadDetail(): Promise<
+  ReportUploadDetailResponse | null
+> {
+  const uploadsResponse = await getReportUploads();
+  const latestUpload = uploadsResponse.uploads[0];
+
+  if (!latestUpload) {
+    return null;
+  }
+
+  return getReportUploadDetail(latestUpload.id);
 }

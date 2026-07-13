@@ -1,10 +1,6 @@
 ﻿import type { ExcelAnalyzeResponse } from "../types/dashboard";
 
-type UploadSuccessBannerProps = {
-  data: ExcelAnalyzeResponse | null;
-};
-
-export function UploadSuccessBanner({ data }: UploadSuccessBannerProps) {
+export function UploadSuccessBanner({ data }: { data: ExcelAnalyzeResponse | null }) {
   if (!data) {
     return null;
   }

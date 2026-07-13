@@ -35,9 +35,7 @@ function formatSavedDate(value: string): string {
 
   const formattedTime = timePart ? timePart.slice(0, 5) : "";
 
-  return formattedTime
-    ? `${formattedDate}, ${formattedTime}`
-    : formattedDate;
+  return formattedTime ? `${formattedDate}, ${formattedTime}` : formattedDate;
 }
 
 export function ReportsPage({ onOpenDashboard }: ReportsPageProps) {
@@ -167,9 +165,7 @@ export function ReportsPage({ onOpenDashboard }: ReportsPageProps) {
         <article className="reports-summary-card">
           <span>Latest Upload</span>
           <strong className="reports-date-value">
-            {latestUpload
-              ? formatSavedDate(latestUpload.createdAt)
-              : "N/A"}
+            {latestUpload ? formatSavedDate(latestUpload.createdAt) : "N/A"}
           </strong>
           <p>Database record time</p>
         </article>
@@ -220,18 +216,14 @@ export function ReportsPage({ onOpenDashboard }: ReportsPageProps) {
         </div>
 
         {isLoading ? (
-          <div className="empty-state">
-            Loading saved dashboard records...
-          </div>
+          <div className="empty-state">Loading saved dashboard records...</div>
         ) : uploads.length === 0 ? (
           <div className="empty-state">
-            No saved reports found. Upload an Excel file from the Dashboard
-            page first.
+            No saved reports found. Upload an Excel file from the Dashboard page
+            first.
           </div>
         ) : filteredUploads.length === 0 ? (
-          <div className="empty-state">
-            No saved reports match your search.
-          </div>
+          <div className="empty-state">No saved reports match your search.</div>
         ) : (
           <div className="table-wrapper reports-table-wrapper">
             <table>
@@ -261,9 +253,7 @@ export function ReportsPage({ onOpenDashboard }: ReportsPageProps) {
                           <strong>#{upload.id}</strong>
 
                           {isLatest ? (
-                            <span className="latest-report-badge">
-                              Latest
-                            </span>
+                            <span className="latest-report-badge">Latest</span>
                           ) : null}
                         </div>
                       </td>
@@ -307,9 +297,7 @@ export function ReportsPage({ onOpenDashboard }: ReportsPageProps) {
                         <button
                           type="button"
                           className="open-report-button"
-                          onClick={() =>
-                            handleOpenDashboard(upload.id)
-                          }
+                          onClick={() => handleOpenDashboard(upload.id)}
                           disabled={openingUploadId === upload.id}
                         >
                           {openingUploadId === upload.id

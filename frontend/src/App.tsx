@@ -4,19 +4,21 @@ import { DashboardInsight } from "./components/DashboardInsight";
 import { ExcelUploader } from "./components/ExcelUploader";
 import { KpiCard } from "./components/KpiCard";
 import { MachinePlanTable } from "./components/MachinePlanTable";
+import { ReportsPage } from "./components/ReportsPage";
 import { StatusDistributionChart } from "./components/StatusDistributionChart";
 import { TargetCapacityChart } from "./components/TargetCapacityChart";
 import { UploadSuccessBanner } from "./components/UploadSuccessBanner";
 import { UtilizationChart } from "./components/UtilizationChart";
 import { analyzeExcelFile } from "./services/excelApi";
+import { getLatestReportUploadDetail } from "./services/reportsApi";
 import type { ExcelAnalyzeResponse } from "./types/dashboard";
 import { formatNumber, formatPercent } from "./utils/formatters";
-import { ReportsPage } from "./components/ReportsPage";
 
 import "./App.css";
 
 const STORAGE_KEY_DASHBOARD_DATA = "kpp-dashboard-latest-data";
 const STORAGE_KEY_FILE_NAME = "kpp-dashboard-latest-file-name";
+const SESSION_KEY_SKIP_AUTO_LOAD = "kpp-dashboard-skip-auto-load";
 
 type PageKey = "dashboard" | "reports";
 
@@ -34,23 +36,80 @@ function App() {
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    const savedDashboardData = localStorage.getItem(STORAGE_KEY_DASHBOARD_DATA);
-    const savedFileName = localStorage.getItem(STORAGE_KEY_FILE_NAME);
+    let isActive = true;
 
-    if (savedDashboardData) {
+    async function restoreLatestDashboard() {
+      const savedDashboardData = localStorage.getItem(
+        STORAGE_KEY_DASHBOARD_DATA,
+      );
+      const savedFileName = localStorage.getItem(STORAGE_KEY_FILE_NAME);
+
+      if (savedDashboardData) {
+        try {
+          const parsedData = JSON.parse(
+            savedDashboardData,
+          ) as ExcelAnalyzeResponse;
+
+          if (!isActive) {
+            return;
+          }
+
+          setDashboardData(parsedData);
+          setSelectedFileName(savedFileName || parsedData.fileName);
+          return;
+        } catch {
+          localStorage.removeItem(STORAGE_KEY_DASHBOARD_DATA);
+          localStorage.removeItem(STORAGE_KEY_FILE_NAME);
+        }
+      }
+
+      const shouldSkipAutoLoad =
+        sessionStorage.getItem(SESSION_KEY_SKIP_AUTO_LOAD) === "true";
+
+      if (shouldSkipAutoLoad) {
+        return;
+      }
+
       try {
-        const parsedData = JSON.parse(
-          savedDashboardData,
-        ) as ExcelAnalyzeResponse;
-        setDashboardData(parsedData);
-      } catch {
-        localStorage.removeItem(STORAGE_KEY_DASHBOARD_DATA);
+        const latestResult = await getLatestReportUploadDetail();
+
+        if (!latestResult || !isActive) {
+          return;
+        }
+
+        const upload = latestResult.upload;
+
+        const latestDashboardData: ExcelAnalyzeResponse = {
+          success: true,
+          message: "Latest saved dashboard loaded from database.",
+          fileName: upload.fileName,
+          workbookSheets: [upload.sourceSheet],
+          sourceSheet: upload.sourceSheet,
+          activeSheets: [upload.sourceSheet],
+          excludedSheets: [],
+          referenceSheets: [],
+          summary: upload.summary,
+          machineRows: upload.machineRows,
+        };
+
+        setDashboardData(latestDashboardData);
+        setSelectedFileName(upload.fileName);
+
+        localStorage.setItem(
+          STORAGE_KEY_DASHBOARD_DATA,
+          JSON.stringify(latestDashboardData),
+        );
+        localStorage.setItem(STORAGE_KEY_FILE_NAME, upload.fileName);
+      } catch (error) {
+        console.error("Latest saved dashboard could not be restored:", error);
       }
     }
 
-    if (savedFileName) {
-      setSelectedFileName(savedFileName);
-    }
+    void restoreLatestDashboard();
+
+    return () => {
+      isActive = false;
+    };
   }, []);
 
   async function handleFileSelect(file: File) {
@@ -58,18 +117,22 @@ function App() {
     setIsLoading(true);
     setErrorMessage("");
 
+    sessionStorage.removeItem(SESSION_KEY_SKIP_AUTO_LOAD);
+
     try {
       const result = await analyzeExcelFile(file);
 
       if (!result.success) {
         setErrorMessage(result.message || "Excel file could not be analyzed.");
         setDashboardData(null);
+
         localStorage.removeItem(STORAGE_KEY_DASHBOARD_DATA);
         localStorage.removeItem(STORAGE_KEY_FILE_NAME);
         return;
       }
 
       setDashboardData(result);
+
       localStorage.setItem(STORAGE_KEY_DASHBOARD_DATA, JSON.stringify(result));
       localStorage.setItem(STORAGE_KEY_FILE_NAME, file.name);
     } catch (error) {
@@ -92,6 +155,8 @@ function App() {
 
     localStorage.removeItem(STORAGE_KEY_DASHBOARD_DATA);
     localStorage.removeItem(STORAGE_KEY_FILE_NAME);
+
+    sessionStorage.setItem(SESSION_KEY_SKIP_AUTO_LOAD, "true");
   }
 
   const summary = dashboardData?.summary;
@@ -103,7 +168,9 @@ function App() {
         <header className="page-header dashboard-hero">
           <div className="hero-left-content">
             <p className="eyebrow">KPP Division</p>
+
             <h1>Production Capacity Dashboard</h1>
+
             <p>
               Upload the monthly activity plan Excel file to generate a
               summarized production capacity dashboard.
@@ -141,48 +208,59 @@ function App() {
           </div>
         </header>
 
-        <section className="kpi-grid">
-          <KpiCard
-            title="Monthly Target"
-            value={formatNumber(summary?.monthlyTarget)}
-            subtitle="Total planned production"
-          />
-          <KpiCard
-            title="Monthly Capacity"
-            value={formatNumber(summary?.monthlyCapacity)}
-            subtitle="Available production capacity"
-          />
-          <KpiCard
-            title="Capacity Utilization"
-            value={formatPercent(summary?.capacityUtilization)}
-            subtitle="Target divided by capacity"
-          />
-          <KpiCard
-            title="Active Labour"
-            value={formatNumber(summary?.activeLabor)}
-            subtitle="Total active labour"
-          />
-          <KpiCard
-            title="Active Machine"
-            value={formatNumber(summary?.activeMachine)}
-            subtitle="Total active machine"
-          />
-          <KpiCard
-            title="Machine Count"
-            value={formatNumber(summary?.machineCount)}
-            subtitle="Machine categories found"
-          />
-        </section>
+        {dashboardData ? ( // Only render dashboard content if data is present
+          <>
+            <section className="kpi-grid">
+              <KpiCard
+                title="Monthly Target"
+                value={formatNumber(summary?.monthlyTarget)}
+                subtitle="Total planned production"
+              />
 
-        <DashboardInsight summary={summary} />
+              <KpiCard
+                title="Monthly Capacity"
+                value={formatNumber(summary?.monthlyCapacity)}
+                subtitle="Available production capacity"
+              />
 
-        <section className="charts-grid">
-          <TargetCapacityChart rows={rows} />
-          <UtilizationChart rows={rows} />
-          <StatusDistributionChart summary={summary} />
-        </section>
+              <KpiCard
+                title="Capacity Utilization"
+                value={formatPercent(summary?.capacityUtilization)}
+                subtitle="Target divided by capacity"
+              />
 
-        <MachinePlanTable rows={rows} />
+              <KpiCard
+                title="Active Labour"
+                value={formatNumber(summary?.activeLabor)}
+                subtitle="Total active labour"
+              />
+
+              <KpiCard
+                title="Active Machine"
+                value={formatNumber(summary?.activeMachine)}
+                subtitle="Total active machine"
+              />
+
+              <KpiCard
+                title="Machine Count"
+                value={formatNumber(summary?.machineCount)}
+                subtitle="Machine categories found"
+              />
+            </section>
+
+            <DashboardInsight summary={summary} />
+
+            <section className="charts-grid">
+              <TargetCapacityChart rows={rows} />
+
+              <UtilizationChart rows={rows} />
+
+              <StatusDistributionChart summary={summary} />
+            </section>
+
+            <MachinePlanTable rows={rows} />
+          </>
+        ) : null}
       </>
     );
   }
@@ -192,6 +270,8 @@ function App() {
     setSelectedFileName(data.fileName);
     setErrorMessage("");
     setActivePage("dashboard");
+
+    sessionStorage.removeItem(SESSION_KEY_SKIP_AUTO_LOAD);
 
     localStorage.setItem(STORAGE_KEY_DASHBOARD_DATA, JSON.stringify(data));
     localStorage.setItem(STORAGE_KEY_FILE_NAME, data.fileName);
@@ -214,6 +294,7 @@ function App() {
       <aside className="sidebar">
         <div className="brand-block">
           <div className="brand-mark">KPP</div>
+
           <div>
             <h1>Plant Dashboard</h1>
             <p>Excel Summary Dashboard</p>

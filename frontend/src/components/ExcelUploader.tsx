@@ -1,10 +1,4 @@
-﻿type ExcelUploaderProps = {
-  selectedFileName?: string;
-  isLoading: boolean;
-  hasDashboardData?: boolean;
-  onFileSelect: (file: File) => void;
-  onClearDashboard?: () => void;
-};
+﻿import type { ExcelUploaderProps } from "../types";
 
 export function ExcelUploader({
   selectedFileName,
