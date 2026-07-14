@@ -1,4 +1,5 @@
 ﻿import { useEffect, useState } from "react";
+import { DashboardEmptyState } from "./components/DashboardEmptyState";
 
 import { DashboardInsight } from "./components/DashboardInsight";
 import { ExcelUploader } from "./components/ExcelUploader";
@@ -171,9 +172,12 @@ function App() {
 
             <h1>Production Capacity Dashboard</h1>
 
-            <p>
-              Upload the monthly activity plan Excel file to generate a
-              summarized production capacity dashboard.
+            <p>Operational Intelligence for Monthly Production Planning.</p>
+
+            <p className="hero-description">
+              Upload the monthly Activity Plan Excel workbook to generate
+              executive production KPIs, machine capacity insights, and
+              historical performance reports.
             </p>
 
             <ExcelUploader
@@ -260,7 +264,9 @@ function App() {
 
             <MachinePlanTable rows={rows} />
           </>
-        ) : null}
+        ) : (
+          <DashboardEmptyState />
+        )}
       </>
     );
   }
