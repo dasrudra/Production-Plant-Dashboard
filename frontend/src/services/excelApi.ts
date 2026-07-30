@@ -1,8 +1,10 @@
 ﻿import type { ExcelAnalyzeResponse } from "../types/dashboard";
 
-const API_BASE_URL = "http://127.0.0.1:8000";
+import { API_BASE_URL } from "./apiConfig";
 
-export async function analyzeExcelFile(file: File): Promise<ExcelAnalyzeResponse> {
+export async function analyzeExcelFile(
+  file: File,
+): Promise<ExcelAnalyzeResponse> {
   const formData = new FormData();
   formData.append("file", file);
 

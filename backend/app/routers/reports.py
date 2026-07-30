@@ -3,6 +3,7 @@
 from app.services.dashboard_storage import (
     get_dashboard_upload_detail,
     get_dashboard_uploads,
+    get_latest_dashboard_upload_detail,
 )
 
 router = APIRouter()
@@ -18,6 +19,23 @@ def list_uploads():
         "uploads": get_dashboard_uploads(),
     }
 
+@router.get("/latest")
+def get_latest_dashboard():
+    """
+    Return the latest uploaded dashboard.
+    """
+    latest = get_latest_dashboard_upload_detail()
+
+    if latest is None:
+        raise HTTPException(
+            status_code=404,
+            detail="No dashboard uploads were found.",
+        )
+
+    return {
+        "success": True,
+        "upload": latest,
+    }
 
 @router.get("/uploads/{upload_id}")
 def get_upload_detail(upload_id: int):

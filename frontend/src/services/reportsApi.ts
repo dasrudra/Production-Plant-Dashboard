@@ -3,7 +3,7 @@
   ReportUploadsResponse,
 } from "../types/reports";
 
-const API_BASE_URL = "http://127.0.0.1:8000";
+import { API_BASE_URL } from "./apiConfig";
 
 export async function getReportUploads(): Promise<ReportUploadsResponse> {
   const response = await fetch(`${API_BASE_URL}/api/reports/uploads`);
@@ -33,9 +33,7 @@ export async function getReportUploadDetail(
   return response.json();
 }
 
-export async function getLatestReportUploadDetail(): Promise<
-  ReportUploadDetailResponse | null
-> {
+export async function getLatestReportUploadDetail(): Promise<ReportUploadDetailResponse | null> {
   const uploadsResponse = await getReportUploads();
   const latestUpload = uploadsResponse.uploads[0];
 

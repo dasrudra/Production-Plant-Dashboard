@@ -243,3 +243,22 @@ def get_dashboard_upload_detail(upload_id: int) -> dict[str, Any] | None:
         ],
         "createdAt": upload["created_at"],
     }
+
+def get_latest_dashboard_upload_detail() -> dict[str, Any] | None:
+    """
+    Return the most recently uploaded dashboard.
+    """
+    with get_connection() as connection:
+        latest = connection.execute(
+            """
+            SELECT id
+            FROM dashboard_uploads
+            ORDER BY id DESC
+            LIMIT 1
+            """
+        ).fetchone()
+
+    if latest is None:
+        return None
+
+    return get_dashboard_upload_detail(int(latest["id"]))
