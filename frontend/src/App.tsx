@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+﻿import { useEffect, useRef, useState } from "react";
 import { DashboardEmptyState } from "./components/DashboardEmptyState";
 
 import { DashboardInsight } from "./components/DashboardInsight";
@@ -35,57 +35,63 @@ function App() {
   const [selectedFileName, setSelectedFileName] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const isMountedRef = useRef(true);
+  const latestUploadIdRef = useRef<number | null>(null);
 
-  useEffect(() => {
-    let isActive = true;
+  async function loadLatestDashboard() {
+    const shouldSkipAutoLoad =
+      sessionStorage.getItem(SESSION_KEY_SKIP_AUTO_LOAD) === "true";
 
-    async function restoreLatestDashboard() {
-      const shouldSkipAutoLoad =
-        sessionStorage.getItem(SESSION_KEY_SKIP_AUTO_LOAD) === "true";
+    if (shouldSkipAutoLoad) {
+      return;
+    }
 
-      if (shouldSkipAutoLoad) {
+    try {
+      const latestResult = await getLatestReportUploadDetail();
+
+      if (!latestResult || !isMountedRef.current) {
         return;
       }
 
-      try {
-        const latestResult = await getLatestReportUploadDetail();
-
-        if (!latestResult || !isActive) {
-          return;
-        }
-
-        const upload = latestResult.upload;
-
-        const latestDashboardData: ExcelAnalyzeResponse = {
-          success: true,
-          message: "Latest saved dashboard loaded from database.",
-          fileName: upload.fileName,
-          workbookSheets: [upload.sourceSheet],
-          sourceSheet: upload.sourceSheet,
-          activeSheets: [upload.sourceSheet],
-          excludedSheets: [],
-          referenceSheets: [],
-          summary: upload.summary,
-          machineRows: upload.machineRows,
-        };
-
-        setDashboardData(latestDashboardData);
-        setSelectedFileName(upload.fileName);
-
-        localStorage.setItem(
-          STORAGE_KEY_DASHBOARD_DATA,
-          JSON.stringify(latestDashboardData),
-        );
-        localStorage.setItem(STORAGE_KEY_FILE_NAME, upload.fileName);
-      } catch (error) {
-        console.error("Latest saved dashboard could not be restored:", error);
+      const upload = latestResult.upload;
+      if (latestUploadIdRef.current === upload.id) {
+        return;
       }
-    }
 
-    void restoreLatestDashboard();
+      const latestDashboardData: ExcelAnalyzeResponse = {
+        success: true,
+        message: "Latest saved dashboard loaded from database.",
+        fileName: upload.fileName,
+        workbookSheets: [upload.sourceSheet],
+        sourceSheet: upload.sourceSheet,
+        activeSheets: [upload.sourceSheet],
+        excludedSheets: [],
+        referenceSheets: [],
+        summary: upload.summary,
+        machineRows: upload.machineRows,
+      };
+
+      setDashboardData(latestDashboardData);
+      setSelectedFileName(upload.fileName);
+      latestUploadIdRef.current = upload.id;
+
+      localStorage.setItem(
+        STORAGE_KEY_DASHBOARD_DATA,
+        JSON.stringify(latestDashboardData),
+      );
+      localStorage.setItem(STORAGE_KEY_FILE_NAME, upload.fileName);
+    } catch (error) {
+      console.error("Latest saved dashboard could not be restored:", error);
+    }
+  }
+
+  useEffect(() => {
+    isMountedRef.current = true;
+
+    void loadLatestDashboard();
 
     return () => {
-      isActive = false;
+      isMountedRef.current = false;
     };
   }, []);
 
