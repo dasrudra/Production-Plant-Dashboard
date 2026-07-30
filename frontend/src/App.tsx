@@ -40,30 +40,6 @@ function App() {
     let isActive = true;
 
     async function restoreLatestDashboard() {
-      const savedDashboardData = localStorage.getItem(
-        STORAGE_KEY_DASHBOARD_DATA,
-      );
-      const savedFileName = localStorage.getItem(STORAGE_KEY_FILE_NAME);
-
-      if (savedDashboardData) {
-        try {
-          const parsedData = JSON.parse(
-            savedDashboardData,
-          ) as ExcelAnalyzeResponse;
-
-          if (!isActive) {
-            return;
-          }
-
-          setDashboardData(parsedData);
-          setSelectedFileName(savedFileName || parsedData.fileName);
-          return;
-        } catch {
-          localStorage.removeItem(STORAGE_KEY_DASHBOARD_DATA);
-          localStorage.removeItem(STORAGE_KEY_FILE_NAME);
-        }
-      }
-
       const shouldSkipAutoLoad =
         sessionStorage.getItem(SESSION_KEY_SKIP_AUTO_LOAD) === "true";
 
