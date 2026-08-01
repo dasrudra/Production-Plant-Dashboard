@@ -5,6 +5,28 @@ from typing import Any
 
 from app.database.db import get_connection
 
+def get_dashboard_upload_by_month(
+    plan_month: str,
+) -> dict[str, Any] | None:
+    """
+    Return an existing dashboard upload for a given plan month.
+    """
+
+    with get_connection() as connection:
+        row = connection.execute(
+            """
+            SELECT id
+            FROM dashboard_uploads
+            WHERE plan_month = ?
+            LIMIT 1
+            """,
+            (plan_month,),
+        ).fetchone()
+
+    if row is None:
+        return None
+
+    return get_dashboard_upload_detail(int(row["id"]))
 
 def save_dashboard_upload(
     *,

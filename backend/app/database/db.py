@@ -20,6 +20,7 @@ def get_connection() -> sqlite3.Connection:
 
     connection = sqlite3.connect(DB_PATH)
     connection.row_factory = sqlite3.Row
+    connection.execute("PRAGMA foreign_keys = ON")
 
     return connection
 
@@ -77,6 +78,7 @@ def initialize_database() -> None:
                 machine_plan_minutes_per_month REAL NOT NULL DEFAULT 0,
                 status TEXT NOT NULL,
                 FOREIGN KEY (upload_id) REFERENCES dashboard_uploads(id)
+                ON DELETE CASCADE
             )
             """
         )

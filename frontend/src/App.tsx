@@ -95,6 +95,16 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      void loadLatestDashboard();
+    }, 30000);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, []);
+
   async function handleFileSelect(file: File) {
     setSelectedFileName(file.name);
     setIsLoading(true);
@@ -114,10 +124,7 @@ function App() {
         return;
       }
 
-      setDashboardData(result);
-
-      localStorage.setItem(STORAGE_KEY_DASHBOARD_DATA, JSON.stringify(result));
-      localStorage.setItem(STORAGE_KEY_FILE_NAME, file.name);
+      await loadLatestDashboard();
     } catch (error) {
       const message =
         error instanceof Error
