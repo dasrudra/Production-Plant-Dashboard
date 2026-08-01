@@ -38,12 +38,20 @@ export type DashboardSummary = {
 export type ExcelAnalyzeResponse = {
   success: boolean;
   message: string;
+
+  duplicate?: boolean;
+  existingUploadId?: number;
+  month?: string;
+
+  uploadId?: number;
+
   fileName: string;
   workbookSheets: string[];
   sourceSheet: string;
   activeSheets: string[];
   excludedSheets: string[];
   referenceSheets: string[];
+
   summary: DashboardSummary;
   machineRows: MachinePlanRow[];
 };

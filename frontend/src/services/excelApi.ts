@@ -24,3 +24,21 @@ export async function analyzeExcelFile(
 
   return response.json();
 }
+
+export async function replaceExcelFile(file: File) {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const response = await fetch("/api/excel/replace", {
+    method: "POST",
+    body: formData,
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(result.detail ?? "Failed to replace dashboard.");
+  }
+
+  return result;
+}

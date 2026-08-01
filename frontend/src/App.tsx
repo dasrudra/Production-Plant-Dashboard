@@ -10,10 +10,11 @@ import { StatusDistributionChart } from "./components/StatusDistributionChart";
 import { TargetCapacityChart } from "./components/TargetCapacityChart";
 import { UploadSuccessBanner } from "./components/UploadSuccessBanner";
 import { UtilizationChart } from "./components/UtilizationChart";
-import { analyzeExcelFile } from "./services/excelApi";
+import { analyzeExcelFile, replaceExcelFile } from "./services/excelApi";
 import { getLatestReportUploadDetail } from "./services/reportsApi";
 import type { ExcelAnalyzeResponse } from "./types/dashboard";
 import { formatNumber, formatPercent } from "./utils/formatters";
+import { ConfirmationModal } from "./components/ConfirmationModal";
 
 import "./App.css";
 
@@ -35,6 +36,10 @@ function App() {
   const [selectedFileName, setSelectedFileName] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [showReplaceModal, setShowReplaceModal] = useState(false);
+
+  const [duplicateUpload, setDuplicateUpload] =
+    useState<ExcelAnalyzeResponse | null>(null);
   const isMountedRef = useRef(true);
   const latestUploadIdRef = useRef<number | null>(null);
 
@@ -116,11 +121,18 @@ function App() {
       const result = await analyzeExcelFile(file);
 
       if (!result.success) {
+        if (result.duplicate) {
+          setDuplicateUpload(result);
+          setShowReplaceModal(true);
+          return;
+        }
+
         setErrorMessage(result.message || "Excel file could not be analyzed.");
         setDashboardData(null);
 
         localStorage.removeItem(STORAGE_KEY_DASHBOARD_DATA);
         localStorage.removeItem(STORAGE_KEY_FILE_NAME);
+
         return;
       }
 
@@ -136,6 +148,24 @@ function App() {
     } finally {
       setIsLoading(false);
     }
+  }
+
+  function handleReplaceCancel() {
+    setShowReplaceModal(false);
+    setDuplicateUpload(null);
+  }
+
+  async function handleReplaceConfirm() {
+    setShowReplaceModal(false);
+
+    /*
+     Replace API
+     will be called here next.
+  */
+
+    setErrorMessage("Replace API will be connected in the next step.");
+
+    setDuplicateUpload(null);
   }
 
   function handleClearDashboard() {
@@ -285,33 +315,49 @@ function App() {
   }
 
   return (
-    <div className="app-shell">
-      <aside className="sidebar">
-        <div className="brand-block">
-          <div className="brand-mark">KPP</div>
+    <>
+      <div className="app-shell">
+        <aside className="sidebar">
+          <div className="brand-block">
+            <div className="brand-mark">KPP</div>
 
-          <div>
-            <h1>Plant Dashboard</h1>
-            <p>Excel Summary Dashboard</p>
+            <div>
+              <h1>Plant Dashboard</h1>
+              <p>Excel Summary Dashboard</p>
+            </div>
           </div>
-        </div>
 
-        <nav className="side-nav">
-          {NAV_ITEMS.map((item) => (
-            <button
-              key={item.key}
-              type="button"
-              className={activePage === item.key ? "active" : ""}
-              onClick={() => setActivePage(item.key)}
-            >
-              {item.label}
-            </button>
-          ))}
-        </nav>
-      </aside>
+          <nav className="side-nav">
+            {NAV_ITEMS.map((item) => (
+              <button
+                key={item.key}
+                type="button"
+                className={activePage === item.key ? "active" : ""}
+                onClick={() => setActivePage(item.key)}
+              >
+                {item.label}
+              </button>
+            ))}
+          </nav>
+        </aside>
 
-      <main className="main-content">{renderActivePage()}</main>
-    </div>
+        <main className="main-content">{renderActivePage()}</main>
+      </div>
+
+      <ConfirmationModal
+        open={showReplaceModal}
+        title="Replace Existing Dashboard?"
+        message={
+          duplicateUpload?.message ??
+          "A dashboard for this month already exists."
+        }
+        confirmText="Replace Dashboard"
+        cancelText="Keep Existing"
+        confirmButtonClass="warning"
+        onConfirm={handleReplaceConfirm}
+        onCancel={handleReplaceCancel}
+      />
+    </>
   );
 }
 

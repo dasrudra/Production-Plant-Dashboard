@@ -28,6 +28,24 @@ def get_dashboard_upload_by_month(
 
     return get_dashboard_upload_detail(int(row["id"]))
 
+def delete_dashboard_upload(upload_id: int) -> None:
+    """
+    Delete a dashboard upload.
+    Related machine rows are automatically removed
+    because of ON DELETE CASCADE.
+    """
+
+    with get_connection() as connection:
+        connection.execute(
+            """
+            DELETE FROM dashboard_uploads
+            WHERE id = ?
+            """,
+            (upload_id,),
+        )
+
+        connection.commit()
+
 def save_dashboard_upload(
     *,
     original_file_name: str,
