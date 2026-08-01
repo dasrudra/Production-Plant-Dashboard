@@ -29,7 +29,7 @@ export async function replaceExcelFile(file: File) {
   const formData = new FormData();
   formData.append("file", file);
 
-  const response = await fetch("/api/excel/replace", {
+  const response = await fetch(`${API_BASE_URL}/api/excel/replace`, {
     method: "POST",
     body: formData,
   });

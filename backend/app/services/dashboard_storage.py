@@ -302,3 +302,28 @@ def get_latest_dashboard_upload_detail() -> dict[str, Any] | None:
         return None
 
     return get_dashboard_upload_detail(int(latest["id"]))
+
+def get_saved_excel_file(upload_id: int) -> dict[str, Any] | None:
+    """
+    Return original and saved Excel filenames for download.
+    """
+
+    with get_connection() as connection:
+        row = connection.execute(
+            """
+            SELECT
+                original_file_name,
+                saved_file_name
+            FROM dashboard_uploads
+            WHERE id = ?
+            """,
+            (upload_id,),
+        ).fetchone()
+
+    if row is None:
+        return None
+
+    return {
+        "originalFileName": row["original_file_name"],
+        "savedFileName": row["saved_file_name"],
+    }

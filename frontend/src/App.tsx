@@ -156,16 +156,41 @@ function App() {
   }
 
   async function handleReplaceConfirm() {
+    if (!duplicateUpload) {
+      return;
+    }
+
     setShowReplaceModal(false);
+    setIsLoading(true);
+    setErrorMessage("");
 
-    /*
-     Replace API
-     will be called here next.
-  */
+    try {
+      const input = document.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement | null;
 
-    setErrorMessage("Replace API will be connected in the next step.");
+      const file = input?.files?.[0];
 
-    setDuplicateUpload(null);
+      if (!file) {
+        throw new Error("Please select the Excel file again.");
+      }
+
+      const result = await replaceExcelFile(file);
+
+      if (!result.success) {
+        throw new Error(result.message);
+      }
+
+      await loadLatestDashboard();
+
+      setDuplicateUpload(null);
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Failed to replace dashboard.",
+      );
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   function handleClearDashboard() {
