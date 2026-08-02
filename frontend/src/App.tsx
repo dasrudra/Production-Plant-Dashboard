@@ -6,6 +6,7 @@ import { ExcelUploader } from "./components/ExcelUploader";
 import { KpiCard } from "./components/KpiCard";
 import { MachinePlanTable } from "./components/MachinePlanTable";
 import { ReportsPage } from "./components/ReportsPage";
+import { MonthComparisonPage } from "./components/MonthComparisonPage";
 import { StatusDistributionChart } from "./components/StatusDistributionChart";
 import { TargetCapacityChart } from "./components/TargetCapacityChart";
 import { UploadSuccessBanner } from "./components/UploadSuccessBanner";
@@ -22,11 +23,12 @@ const STORAGE_KEY_DASHBOARD_DATA = "kpp-dashboard-latest-data";
 const STORAGE_KEY_FILE_NAME = "kpp-dashboard-latest-file-name";
 const SESSION_KEY_SKIP_AUTO_LOAD = "kpp-dashboard-skip-auto-load";
 
-type PageKey = "dashboard" | "reports";
+type PageKey = "dashboard" | "reports" | "comparison";
 
 const NAV_ITEMS: { key: PageKey; label: string }[] = [
   { key: "dashboard", label: "Dashboard" },
   { key: "reports", label: "Reports" },
+  { key: "comparison", label: "Month Comparison" },
 ];
 
 function App() {
@@ -331,12 +333,24 @@ function App() {
     return <ReportsPage onOpenDashboard={handleOpenSavedDashboard} />;
   }
 
-  function renderActivePage() {
-    if (activePage === "dashboard") {
-      return renderDashboardPage();
-    }
+  function renderComparisonPage() {
+    return <MonthComparisonPage />;
+  }
 
-    return renderReportsPage();
+  function renderActivePage() {
+    switch (activePage) {
+      case "dashboard":
+        return renderDashboardPage();
+
+      case "reports":
+        return renderReportsPage();
+
+      case "comparison":
+        return renderComparisonPage();
+
+      default:
+        return renderDashboardPage();
+    }
   }
 
   return (
