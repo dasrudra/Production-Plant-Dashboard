@@ -1,10 +1,13 @@
 ﻿import { useEffect, useMemo, useState } from "react";
 
 import {
+  deleteReportUpload,
+  downloadOriginalExcel,
   getReportUploadDetail,
   getReportUploads,
 } from "../services/reportsApi";
 import type { ExcelAnalyzeResponse } from "../types/dashboard";
+import { ConfirmationModal } from "./ConfirmationModal";
 import type { ReportUploadSummary } from "../types/reports";
 import { formatNumber, formatPercent } from "../utils/formatters";
 
@@ -44,6 +47,11 @@ export function ReportsPage({ onOpenDashboard }: ReportsPageProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [openingUploadId, setOpeningUploadId] = useState<number | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const [selectedUploadId, setSelectedUploadId] = useState<number | null>(null);
+
+  const [isDeleting, setIsDeleting] = useState(false);
 
   async function loadReports() {
     setIsLoading(true);
@@ -95,6 +103,39 @@ export function ReportsPage({ onOpenDashboard }: ReportsPageProps) {
       setErrorMessage(message);
     } finally {
       setOpeningUploadId(null);
+    }
+  }
+
+  function handleDeleteClick(uploadId: number) {
+    setSelectedUploadId(uploadId);
+    setShowDeleteModal(true);
+  }
+
+  function handleDeleteCancel() {
+    setShowDeleteModal(false);
+    setSelectedUploadId(null);
+  }
+
+  async function handleDeleteConfirm() {
+    if (selectedUploadId === null) {
+      return;
+    }
+
+    setIsDeleting(true);
+
+    try {
+      await deleteReportUpload(selectedUploadId);
+
+      setShowDeleteModal(false);
+      setSelectedUploadId(null);
+
+      await loadReports();
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Failed to delete report.",
+      );
+    } finally {
+      setIsDeleting(false);
     }
   }
 
@@ -294,16 +335,64 @@ export function ReportsPage({ onOpenDashboard }: ReportsPageProps) {
                       </td>
 
                       <td>
-                        <button
-                          type="button"
-                          className="open-report-button"
-                          onClick={() => handleOpenDashboard(upload.id)}
-                          disabled={openingUploadId === upload.id}
-                        >
-                          {openingUploadId === upload.id
-                            ? "Opening..."
-                            : "Open Dashboard"}
-                        </button>
+                        <div className="report-action-group">
+                          <button
+                            type="button"
+                            className="open-report-button"
+                            onClick={() => handleOpenDashboard(upload.id)}
+                            disabled={openingUploadId === upload.id}
+                          >
+                            {openingUploadId === upload.id
+                              ? "Opening..."
+                              : "Open Dashboard"}
+                          </button>
+
+                          <button
+                            type="button"
+                            className="download-report-button"
+                            title="Download Original Excel"
+                            onClick={() => downloadOriginalExcel(upload.id)}
+                          >
+                            <svg
+                              width="18"
+                              height="18"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2.4"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M12 3v11" />
+                              <path d="M7 10l5 5 5-5" />
+                              <path d="M5 21h14" />
+                            </svg>
+                          </button>
+
+                          <button
+                            type="button"
+                            className="delete-report-button"
+                            title="Delete Report"
+                            onClick={() => handleDeleteClick(upload.id)}
+                          >
+                            <svg
+                              width="18"
+                              height="18"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2.3"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <polyline points="3 6 5 6 21 6" />
+                              <path d="M19 6l-1 14H6L5 6" />
+                              <path d="M10 11v6" />
+                              <path d="M14 11v6" />
+                              <path d="M9 6V4h6v2" />
+                            </svg>
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   );
@@ -313,6 +402,15 @@ export function ReportsPage({ onOpenDashboard }: ReportsPageProps) {
           </div>
         )}
       </section>
+      <ConfirmationModal
+        open={showDeleteModal}
+        title="Delete Report"
+        message="Are you sure you want to permanently delete this saved dashboard report?"
+        confirmText={isDeleting ? "Deleting..." : "Delete"}
+        cancelText="Cancel"
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+      />
     </section>
   );
 }

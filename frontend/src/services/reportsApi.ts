@@ -43,3 +43,25 @@ export async function getLatestReportUploadDetail(): Promise<ReportUploadDetailR
 
   return getReportUploadDetail(latestUpload.id);
 }
+
+export function downloadOriginalExcel(uploadId: number): void {
+  window.open(
+    `${API_BASE_URL}/api/reports/uploads/${uploadId}/download`,
+    "_blank",
+  );
+}
+
+export async function deleteReportUpload(uploadId: number): Promise<void> {
+  const response = await fetch(
+    `${API_BASE_URL}/api/reports/uploads/${uploadId}`,
+    {
+      method: "DELETE",
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to delete report. Server returned ${response.status}.`,
+    );
+  }
+}
