@@ -5,6 +5,17 @@ import {
   getReportUploadDetail,
 } from "../services/reportsApi";
 import type { ReportUploadSummary, ReportUploadDetail } from "../types/reports";
+function numberDifference(current: number, previous: number) {
+  return current - previous;
+}
+
+function percentDifference(current: number, previous: number) {
+  if (previous === 0) {
+    return 0;
+  }
+
+  return ((current - previous) / previous) * 100;
+}
 
 export function MonthComparisonPage() {
   const [reports, setReports] = useState<ReportUploadSummary[]>([]);
@@ -129,69 +140,122 @@ export function MonthComparisonPage() {
         </div>
 
         {leftDashboard && rightDashboard && (
-          <div className="comparison-summary-card">
-            <h2>KPI Comparison</h2>
+          <>
+            <div className="comparison-summary-card">
+              <h2>KPI Comparison</h2>
 
-            <table className="comparison-table">
-              <thead>
-                <tr>
-                  <th>Metric</th>
-                  <th>{leftDashboard.summary.month}</th>
-                  <th>{rightDashboard.summary.month}</th>
-                </tr>
-              </thead>
+              <table className="comparison-table">
+                <thead>
+                  <tr>
+                    <th>Metric</th>
+                    <th>{leftDashboard.summary.month}</th>
+                    <th>{rightDashboard.summary.month}</th>
+                  </tr>
+                </thead>
 
-              <tbody>
-                <tr>
-                  <td>Monthly Target</td>
-                  <td>
-                    {leftDashboard.summary.monthlyTarget.toLocaleString()}
-                  </td>
-                  <td>
-                    {rightDashboard.summary.monthlyTarget.toLocaleString()}
-                  </td>
-                </tr>
+                <tbody>
+                  <tr>
+                    <td>Monthly Target</td>
+                    <td>
+                      {leftDashboard.summary.monthlyTarget.toLocaleString()}
+                    </td>
+                    <td>
+                      {rightDashboard.summary.monthlyTarget.toLocaleString()}
+                    </td>
+                  </tr>
 
-                <tr>
-                  <td>Monthly Capacity</td>
-                  <td>
-                    {leftDashboard.summary.monthlyCapacity.toLocaleString()}
-                  </td>
-                  <td>
-                    {rightDashboard.summary.monthlyCapacity.toLocaleString()}
-                  </td>
-                </tr>
+                  <tr>
+                    <td>Monthly Capacity</td>
+                    <td>
+                      {leftDashboard.summary.monthlyCapacity.toLocaleString()}
+                    </td>
+                    <td>
+                      {rightDashboard.summary.monthlyCapacity.toLocaleString()}
+                    </td>
+                  </tr>
 
-                <tr>
-                  <td>Capacity Utilization</td>
-                  <td>
-                    {leftDashboard.summary.capacityUtilization.toFixed(2)}%
-                  </td>
-                  <td>
-                    {rightDashboard.summary.capacityUtilization.toFixed(2)}%
-                  </td>
-                </tr>
+                  <tr>
+                    <td>Capacity Utilization</td>
+                    <td>
+                      {leftDashboard.summary.capacityUtilization.toFixed(2)}%
+                    </td>
+                    <td>
+                      {rightDashboard.summary.capacityUtilization.toFixed(2)}%
+                    </td>
+                  </tr>
 
-                <tr>
-                  <td>Machine Count</td>
-                  <td>{leftDashboard.summary.machineCount}</td>
-                  <td>{rightDashboard.summary.machineCount}</td>
-                </tr>
+                  <tr>
+                    <td>Machine Count</td>
+                    <td>{leftDashboard.summary.machineCount}</td>
+                    <td>{rightDashboard.summary.machineCount}</td>
+                  </tr>
 
-                <tr>
-                  <td>Active Labor</td>
-                  <td>{leftDashboard.summary.activeLabor}</td>
-                  <td>{rightDashboard.summary.activeLabor}</td>
-                </tr>
+                  <tr>
+                    <td>Active Labor</td>
+                    <td>{leftDashboard.summary.activeLabor}</td>
+                    <td>{rightDashboard.summary.activeLabor}</td>
+                  </tr>
 
-                <tr>
-                  <td>Active Machine</td>
-                  <td>{leftDashboard.summary.activeMachine}</td>
-                  <td>{rightDashboard.summary.activeMachine}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+                  <tr>
+                    <td>Active Machine</td>
+                    <td>{leftDashboard.summary.activeMachine}</td>
+                    <td>{rightDashboard.summary.activeMachine}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div className="comparison-difference-card">
+              <h2>Performance Difference</h2>
+
+              <div className="comparison-difference-grid">
+                <div className="difference-item">
+                  <span>Monthly Target</span>
+
+                  <strong>
+                    {numberDifference(
+                      leftDashboard.summary.monthlyTarget,
+                      rightDashboard.summary.monthlyTarget,
+                    ).toLocaleString()}
+                  </strong>
+
+                  <p>
+                    {percentDifference(
+                      leftDashboard.summary.monthlyTarget,
+                      rightDashboard.summary.monthlyTarget,
+                    ).toFixed(2)}
+                    %
+                  </p>
+                </div>
+
+                <div className="difference-item">
+                  <span>Capacity Utilization</span>
+
+                  <strong>
+                    {numberDifference(
+                      leftDashboard.summary.capacityUtilization,
+                      rightDashboard.summary.capacityUtilization,
+                    ).toFixed(2)}
+                    %
+                  </strong>
+
+                  <p>Difference in utilization</p>
+                </div>
+
+                <div className="difference-item">
+                  <span>Active Machine</span>
+
+                  <strong>
+                    {numberDifference(
+                      leftDashboard.summary.activeMachine,
+                      rightDashboard.summary.activeMachine,
+                    )}
+                  </strong>
+
+                  <p>Machine change</p>
+                </div>
+              </div>
+            </div>
+          </>
         )}
       </section>
     </div>
