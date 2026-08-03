@@ -9,14 +9,6 @@ function numberDifference(current: number, previous: number) {
   return current - previous;
 }
 
-function percentDifference(current: number, previous: number) {
-  if (previous === 0) {
-    return 0;
-  }
-
-  return ((current - previous) / previous) * 100;
-}
-
 export function MonthComparisonPage() {
   const [reports, setReports] = useState<ReportUploadSummary[]>([]);
   const [leftMonthId, setLeftMonthId] = useState<number | "">("");
@@ -204,56 +196,47 @@ export function MonthComparisonPage() {
                 </tbody>
               </table>
             </div>
-            <div className="comparison-difference-card">
-              <h2>Performance Difference</h2>
+            <div className="comparison-summary-card">
+              <h2>Machine-wise Comparison</h2>
 
-              <div className="comparison-difference-grid">
-                <div className="difference-item">
-                  <span>Monthly Target</span>
+              <table className="comparison-table">
+                <thead>
+                  <tr>
+                    <th>Machine</th>
+                    <th>{leftDashboard.summary.month}</th>
+                    <th>{rightDashboard.summary.month}</th>
+                    <th>Difference</th>
+                  </tr>
+                </thead>
 
-                  <strong>
-                    {numberDifference(
-                      leftDashboard.summary.monthlyTarget,
-                      rightDashboard.summary.monthlyTarget,
-                    ).toLocaleString()}
-                  </strong>
+                <tbody>
+                  {leftDashboard.machineRows.map((leftRow) => {
+                    const rightRow = rightDashboard.machineRows.find(
+                      (machine) => machine.machineType === leftRow.machineType,
+                    );
 
-                  <p>
-                    {percentDifference(
-                      leftDashboard.summary.monthlyTarget,
-                      rightDashboard.summary.monthlyTarget,
-                    ).toFixed(2)}
-                    %
-                  </p>
-                </div>
+                    return (
+                      <tr key={leftRow.machineType}>
+                        <td>{leftRow.machineType}</td>
 
-                <div className="difference-item">
-                  <span>Capacity Utilization</span>
+                        <td>{leftRow.achievement.toFixed(2)}%</td>
 
-                  <strong>
-                    {numberDifference(
-                      leftDashboard.summary.capacityUtilization,
-                      rightDashboard.summary.capacityUtilization,
-                    ).toFixed(2)}
-                    %
-                  </strong>
+                        <td>{rightRow?.achievement.toFixed(2) ?? "-"}%</td>
 
-                  <p>Difference in utilization</p>
-                </div>
-
-                <div className="difference-item">
-                  <span>Active Machine</span>
-
-                  <strong>
-                    {numberDifference(
-                      leftDashboard.summary.activeMachine,
-                      rightDashboard.summary.activeMachine,
-                    )}
-                  </strong>
-
-                  <p>Machine change</p>
-                </div>
-              </div>
+                        <td>
+                          {rightRow
+                            ? numberDifference(
+                                leftRow.achievement,
+                                rightRow.achievement,
+                              ).toFixed(2)
+                            : "-"}
+                          %
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
           </>
         )}

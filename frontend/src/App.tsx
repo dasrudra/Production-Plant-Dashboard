@@ -12,8 +12,12 @@ import { TargetCapacityChart } from "./components/TargetCapacityChart";
 import { UploadSuccessBanner } from "./components/UploadSuccessBanner";
 import { UtilizationChart } from "./components/UtilizationChart";
 import { analyzeExcelFile, replaceExcelFile } from "./services/excelApi";
-import { getLatestReportUploadDetail } from "./services/reportsApi";
+import {
+  getLatestReportUploadDetail,
+  getReportUploads,
+} from "./services/reportsApi";
 import type { ExcelAnalyzeResponse } from "./types/dashboard";
+import type { ReportUploadSummary } from "./types/reports";
 import { formatNumber, formatPercent } from "./utils/formatters";
 import { ConfirmationModal } from "./components/ConfirmationModal";
 
@@ -35,6 +39,7 @@ function App() {
   const [activePage, setActivePage] = useState<PageKey>("dashboard");
   const [dashboardData, setDashboardData] =
     useState<ExcelAnalyzeResponse | null>(null);
+  const [reports, setReports] = useState<ReportUploadSummary[]>([]);
   const [selectedFileName, setSelectedFileName] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -96,6 +101,9 @@ function App() {
     isMountedRef.current = true;
 
     void loadLatestDashboard();
+    getReportUploads().then((result) => {
+      setReports(result.uploads);
+    });
 
     return () => {
       isMountedRef.current = false;
@@ -298,7 +306,7 @@ function App() {
               />
             </section>
 
-            <DashboardInsight summary={summary} />
+            <DashboardInsight summary={summary} reports={reports} />
 
             <section className="charts-grid">
               <TargetCapacityChart rows={rows} />
