@@ -1,4 +1,38 @@
+import { useEffect, useState } from "react";
+
+import { getReportUploads } from "../services/reportsApi";
+import type { ReportUploadSummary } from "../types/reports";
+
 export function MonthComparisonPage() {
+  const [reports, setReports] = useState<ReportUploadSummary[]>([]);
+  const [leftMonthId, setLeftMonthId] = useState<number | "">("");
+  const [rightMonthId, setRightMonthId] = useState<number | "">("");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    async function loadReports() {
+      setLoading(true);
+
+      try {
+        const result = await getReportUploads();
+
+        setReports(result.uploads);
+
+        if (result.uploads.length >= 1) {
+          setLeftMonthId(result.uploads[0].id);
+        }
+
+        if (result.uploads.length >= 2) {
+          setRightMonthId(result.uploads[1].id);
+        }
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadReports();
+  }, []);
+
   return (
     <div className="module-placeholder">
       <section className="module-placeholder-header">
@@ -14,49 +48,48 @@ export function MonthComparisonPage() {
       </section>
 
       <section className="module-scope-card">
-        <h2>Upcoming Features</h2>
+        <h2>Select Dashboards</h2>
 
-        <div className="module-scope-grid">
-          <div className="module-scope-item">
-            <span>✓</span>
-            <strong>Compare Two Months</strong>
+        <div className="comparison-selector-grid">
+          <div className="comparison-selector">
+            <label>First Month</label>
+
+            <select
+              value={leftMonthId}
+              onChange={(event) => setLeftMonthId(Number(event.target.value))}
+            >
+              {reports.map((report) => (
+                <option key={report.id} value={report.id}>
+                  {report.month} — {report.fileName}
+                </option>
+              ))}
+            </select>
           </div>
 
-          <div className="module-scope-item">
-            <span>✓</span>
-            <strong>KPI Difference</strong>
-          </div>
+          <div className="comparison-selector">
+            <label>Second Month</label>
 
-          <div className="module-scope-item">
-            <span>✓</span>
-            <strong>Machine Comparison</strong>
-          </div>
-
-          <div className="module-scope-item">
-            <span>✓</span>
-            <strong>Capacity Trend</strong>
-          </div>
-
-          <div className="module-scope-item">
-            <span>✓</span>
-            <strong>Status Changes</strong>
-          </div>
-
-          <div className="module-scope-item">
-            <span>✓</span>
-            <strong>Executive Summary</strong>
+            <select
+              value={rightMonthId}
+              onChange={(event) => setRightMonthId(Number(event.target.value))}
+            >
+              {reports.map((report) => (
+                <option key={report.id} value={report.id}>
+                  {report.month} — {report.fileName}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
-      </section>
 
-      <section className="module-note-card">
-        <strong>Coming Next</strong>
-
-        <p>
-          In the next step, users will be able to select two saved monthly
-          dashboards and instantly compare every KPI, utilization chart, machine
-          category and production capacity.
-        </p>
+        <div className="comparison-button-row">
+          <button
+            className="compare-dashboard-button"
+            disabled={loading || leftMonthId === "" || rightMonthId === ""}
+          >
+            Compare Dashboards
+          </button>
+        </div>
       </section>
     </div>
   );
