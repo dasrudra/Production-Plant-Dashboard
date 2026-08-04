@@ -1,4 +1,6 @@
-﻿* {
+﻿@import "./styles/tokens.css";
+
+* {
   box-sizing: border-box;
 }
 
@@ -16,12 +18,10 @@ body {
       transparent 30%
     ),
     linear-gradient(135deg, #eef4ff 0%, #f8fafc 42%, #edfdf5 100%);
-  color: #0f172a;
-  font-family:
-    Inter,
-    Segoe UI,
-    Arial,
-    sans-serif;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 button,
