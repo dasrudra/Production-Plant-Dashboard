@@ -18,6 +18,7 @@ const STATUS_COLORS: Record<string, string> = {
   Normal: "#f59e0b",
   Good: "#22c55e",
   Excellent: "#0ea5e9",
+  "Over Capacity": "#7c3aed",
 };
 
 export function StatusDistributionChart({
@@ -27,15 +28,19 @@ export function StatusDistributionChart({
     return (
       <div className="chart-card status-chart-card">
         <h2>Status Distribution</h2>
-        <div className="empty-state">Upload Excel file to view status chart.</div>
+        <div className="empty-state">
+          Upload Excel file to view status chart.
+        </div>
       </div>
     );
   }
 
-  const data = ["Low", "Normal", "Good", "Excellent"].map((status) => ({
-    name: status,
-    value: summary.statusCounts?.[status] ?? 0,
-  }));
+  const data = ["Low", "Normal", "Good", "Excellent", "Over Capacity"].map(
+    (status) => ({
+      name: status,
+      value: summary.statusCounts?.[status] ?? 0,
+    }),
+  );
 
   const total = data.reduce((sum, item) => sum + item.value, 0);
 

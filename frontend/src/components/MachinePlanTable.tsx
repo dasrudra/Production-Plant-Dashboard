@@ -7,7 +7,14 @@ type MachinePlanTableProps = {
   rows: MachinePlanRow[];
 };
 
-const STATUS_OPTIONS = ["All", "Low", "Normal", "Good", "Excellent"];
+const STATUS_OPTIONS = [
+  "All",
+  "Low",
+  "Normal",
+  "Good",
+  "Excellent",
+  "Over Capacity",
+];
 
 export function MachinePlanTable({ rows }: MachinePlanTableProps) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -109,7 +116,11 @@ export function MachinePlanTable({ rows }: MachinePlanTableProps) {
                   <td>{formatNumber(row.labourPlanMinutesPerMonth)}</td>
                   <td>{formatNumber(row.machinePlanMinutesPerMonth)}</td>
                   <td>
-                    <span className={`status-pill status-${row.status.toLowerCase()}`}>
+                    <span
+                      className={`status-pill status-${row.status
+                        .toLowerCase()
+                        .replace(/\s+/g, "-")}`}
+                    >
                       {row.status}
                     </span>
                   </td>

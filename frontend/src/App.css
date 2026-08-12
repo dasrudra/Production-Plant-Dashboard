@@ -423,6 +423,11 @@ tbody tr:hover {
   background: #e0f2fe;
 }
 
+.status-over-capacity {
+  color: #5b21b6;
+  background: #ede9fe;
+}
+
 .empty-state {
   border: 1px dashed #cbd5e1;
   background: linear-gradient(
@@ -1596,11 +1601,6 @@ tbody tr:hover {
 
 .dashboard-hero .meta-item strong {
   font-size: 20px;
-}
-
-/* Remove old status summary spacing if section was deleted */
-.status-summary-grid {
-  display: none;
 }
 
 /* ---------- Dashboard Empty State ---------- */

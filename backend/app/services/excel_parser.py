@@ -68,21 +68,34 @@ def extract_month_and_division(activity_title: str) -> dict[str, str]:
     return result
 
 
+# Business rule thresholds (achievement = monthly target / monthly capacity).
+# Change OVER_CAPACITY_THRESHOLD to 1.02 to allow a 2% planning tolerance
+# before a machine is flagged as over-committed.
+OVER_CAPACITY_THRESHOLD = 1.00
+EXCELLENT_THRESHOLD = 0.90
+GOOD_THRESHOLD = 0.80
+NORMAL_THRESHOLD = 0.60
+
+
 def calculate_status(achievement_decimal: float) -> str:
     """
     Status rule:
-    achievement >= 90% = Excellent
-    achievement >= 80% = Good
-    achievement >= 60% = Normal
+    achievement >  100% = Over Capacity
+    achievement >=  90% = Excellent
+    achievement >=  80% = Good
+    achievement >=  60% = Normal
     below 60% = Low
     """
-    if achievement_decimal >= 0.90:
+    if achievement_decimal > OVER_CAPACITY_THRESHOLD:
+        return "Over Capacity"
+
+    if achievement_decimal >= EXCELLENT_THRESHOLD:
         return "Excellent"
 
-    if achievement_decimal >= 0.80:
+    if achievement_decimal >= GOOD_THRESHOLD:
         return "Good"
 
-    if achievement_decimal >= 0.60:
+    if achievement_decimal >= NORMAL_THRESHOLD:
         return "Normal"
 
     return "Low"
