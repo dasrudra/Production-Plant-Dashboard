@@ -6,18 +6,7 @@
 
 body {
   margin: 0;
-  background:
-    radial-gradient(
-      circle at top left,
-      rgba(37, 99, 235, 0.18),
-      transparent 32%
-    ),
-    radial-gradient(
-      circle at top right,
-      rgba(34, 197, 94, 0.14),
-      transparent 30%
-    ),
-    linear-gradient(135deg, #eef4ff 0%, #f8fafc 42%, #edfdf5 100%);
+  background: var(--surface-app);
   color: var(--text-primary);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -107,11 +96,7 @@ input {
 
 .page-header {
   background:
-    linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.94),
-      rgba(255, 255, 255, 0.72)
-    ),
+    var(--surface-header),
     radial-gradient(
       circle at top right,
       rgba(37, 99, 235, 0.16),
@@ -122,7 +107,7 @@ input {
   box-shadow:
     0 24px 70px rgba(15, 23, 42, 0.11),
     inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(226, 232, 240, 0.9);
+  border: 1px solid var(--border-card);
   display: flex;
   justify-content: space-between;
   gap: 24px;
@@ -189,13 +174,13 @@ input {
 
 .chart-card,
 .table-card {
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--surface-card);
   border-radius: 26px;
   padding: 26px;
   box-shadow:
     0 20px 50px rgba(15, 23, 42, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.86);
-  border: 1px solid rgba(226, 232, 240, 0.9);
+  border: 1px solid var(--border-card);
   transition:
     transform 0.22s ease,
     box-shadow 0.22s ease,
@@ -280,17 +265,13 @@ input {
 }
 
 .kpi-card {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.96),
-    rgba(248, 250, 252, 0.94)
-  );
+  background: var(--surface-raised);
   border-radius: 24px;
   padding: 23px;
   box-shadow:
     0 20px 50px rgba(15, 23, 42, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(226, 232, 240, 0.95);
+  border: 1px solid var(--border-card);
   position: relative;
   overflow: hidden;
   transition:
@@ -359,7 +340,7 @@ table {
   border-collapse: collapse;
   width: 100%;
   min-width: 1100px;
-  background: #ffffff;
+  background: var(--bg-surface);
 }
 
 th,
@@ -372,7 +353,7 @@ td {
 
 th {
   color: var(--text-secondary);
-  background: linear-gradient(180deg, #f8fafc, #eef2ff);
+  background: var(--surface-th);
   font-weight: var(--weight-black);
   position: sticky;
   top: 0;
@@ -387,7 +368,7 @@ tbody tr {
 }
 
 tbody tr:hover {
-  background: #f8fafc;
+  background: var(--bg-surface-muted);
 }
 
 .strong {
@@ -611,7 +592,7 @@ tbody tr:hover {
 
 .chart-total-badge {
   min-width: 150px;
-  background: #f8fafc;
+  background: var(--bg-surface-muted);
   border: 1px solid var(--border-brand);
   border-radius: 18px;
   padding: 14px 16px;
@@ -643,7 +624,7 @@ tbody tr:hover {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: #f8fafc;
+  background: var(--bg-surface-muted);
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 14px;
@@ -683,7 +664,7 @@ tbody tr:hover {
 }
 
 .table-result-count {
-  background: #f8fafc;
+  background: var(--bg-surface-muted);
   border: 1px solid var(--border-brand);
   border-radius: 16px;
   padding: 12px 14px;
@@ -723,7 +704,7 @@ tbody tr:hover {
 .table-filter-box select {
   width: 100%;
   border: 1px solid var(--border-brand);
-  background: #ffffff;
+  background: var(--bg-surface);
   border-radius: 16px;
   padding: 13px 14px;
   color: var(--text-primary);
@@ -743,7 +724,7 @@ tbody tr:hover {
 .table-search-box input:hover,
 .table-filter-box select:hover {
   transform: translateY(-1px);
-  border-color: var(--text-on-brand-muted);
+  border-color: var(--border-strong);
 }
 
 @media (max-width: 860px) {
@@ -834,7 +815,7 @@ tbody tr:hover {
     );
   border-radius: 28px;
   padding: 34px;
-  border: 1px solid rgba(226, 232, 240, 0.9);
+  border: 1px solid var(--border-card);
   box-shadow:
     0 24px 70px rgba(15, 23, 42, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.88);
@@ -855,10 +836,10 @@ tbody tr:hover {
 }
 
 .module-scope-card {
-  background: rgba(255, 255, 255, 0.92);
+  background: var(--surface-card);
   border-radius: 24px;
   padding: 26px;
-  border: 1px solid rgba(226, 232, 240, 0.95);
+  border: 1px solid var(--border-card);
   box-shadow:
     0 20px 50px rgba(15, 23, 42, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.9);
@@ -979,12 +960,8 @@ tbody tr:hover {
   min-width: 0;
   padding: 20px;
   border-radius: 21px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.98),
-    rgba(248, 250, 252, 0.94)
-  );
-  border: 1px solid rgba(226, 232, 240, 0.96);
+  background: var(--surface-raised);
+  border: 1px solid var(--border-card);
   box-shadow:
     0 18px 46px rgba(15, 23, 42, 0.075),
     inset 0 1px 0 rgba(255, 255, 255, 0.9);
@@ -1036,8 +1013,8 @@ tbody tr:hover {
   align-items: end;
   padding: 18px 20px;
   border-radius: 21px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(226, 232, 240, 0.96);
+  background: var(--surface-card);
+  border: 1px solid var(--border-card);
   box-shadow: 0 16px 38px rgba(15, 23, 42, 0.07);
 }
 
@@ -1062,7 +1039,7 @@ tbody tr:hover {
   border-radius: 14px;
   outline: none;
   color: var(--text-primary);
-  background: #ffffff;
+  background: var(--bg-surface);
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease;
@@ -1122,7 +1099,7 @@ tbody tr:hover {
   padding: 10px 13px;
   border-radius: 14px;
   text-align: right;
-  background: #eff6ff;
+  background: var(--surface-subtle);
   border: 1px solid #bfdbfe;
 }
 
@@ -1290,7 +1267,7 @@ tbody tr:hover {
 
 /* 2. Table Adjustments & Spacing */
 .reports-table-wrapper {
-  background: #ffffff;
+  background: var(--bg-surface);
   border: 1px solid var(--border);
   border-radius: 16px;
   overflow-x: auto;
@@ -1403,7 +1380,7 @@ tbody tr:hover {
   align-items: center;
   justify-content: center;
   min-height: 48px;
-  background: #ffffff;
+  background: var(--bg-surface);
   color: #1551b5;
   box-shadow:
     0 18px 38px rgba(15, 23, 42, 0.22),
@@ -1411,7 +1388,7 @@ tbody tr:hover {
 }
 
 .hero-upload-button:hover {
-  background: #eff6ff;
+  background: var(--surface-subtle);
   color: #0f3b85;
   box-shadow: 0 22px 46px rgba(15, 23, 42, 0.28);
 }
@@ -1609,12 +1586,8 @@ tbody tr:hover {
   margin-top: 28px;
   padding: 42px;
   border-radius: 24px;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.98),
-    rgba(248, 250, 252, 0.98)
-  );
-  border: 1px solid rgba(226, 232, 240, 0.9);
+  background: var(--surface-raised);
+  border: 1px solid var(--border-card);
   box-shadow:
     0 20px 50px rgba(15, 23, 42, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.85);
@@ -1657,7 +1630,7 @@ tbody tr:hover {
 .empty-dashboard-features span {
   padding: 12px 18px;
   border-radius: 999px;
-  background: #eff6ff;
+  background: var(--surface-subtle);
   color: #1551b5;
   font-weight: var(--weight-bold);
 }
@@ -1693,7 +1666,7 @@ tbody tr:hover {
   width: 430px;
   max-width: 92%;
 
-  background: white;
+  background: var(--bg-surface);
 
   border-radius: 18px;
 
@@ -1737,7 +1710,7 @@ tbody tr:hover {
 
   font-weight: var(--weight-bold);
 
-  color: #132b55;
+  color: var(--text-primary);
 }
 
 .confirmation-message {
@@ -1763,7 +1736,7 @@ tbody tr:hover {
 
   border-radius: 10px;
 
-  background: #f3f4f6;
+  background: var(--bg-surface-muted);
 
   border: none;
 
@@ -1846,7 +1819,7 @@ tbody tr:hover {
   border: 1px solid var(--border-brand);
   border-radius: 50%;
 
-  background: #ffffff;
+  background: var(--bg-surface);
 
   color: var(--text-secondary);
 
@@ -1907,7 +1880,7 @@ tbody tr:hover {
   padding: 0 16px;
   border-radius: 14px;
   border: 1px solid var(--border-brand);
-  background: white;
+  background: var(--bg-surface);
   font-size: var(--text-base);
   color: var(--text-secondary);
   transition: all 0.2s ease;
@@ -1970,9 +1943,9 @@ tbody tr:hover {
 .comparison-summary-card {
   margin-top: 36px;
 
-  background: rgba(255, 255, 255, 0.96);
+  background: var(--surface-card);
 
-  border: 1px solid rgba(226, 232, 240, 0.9);
+  border: 1px solid var(--border-card);
 
   border-radius: 22px;
 
@@ -2002,7 +1975,7 @@ tbody tr:hover {
 }
 
 .comparison-table thead {
-  background: #eff6ff;
+  background: var(--surface-subtle);
 }
 
 .comparison-table th {
@@ -2034,7 +2007,7 @@ tbody tr:hover {
 }
 
 .comparison-table tbody tr:hover {
-  background: #f8fafc;
+  background: var(--bg-surface-muted);
 }
 
 .comparison-table td:first-child {
