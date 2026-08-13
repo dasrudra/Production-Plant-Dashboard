@@ -34,14 +34,21 @@ export async function getReportUploadDetail(
 }
 
 export async function getLatestReportUploadDetail(): Promise<ReportUploadDetailResponse | null> {
-  const uploadsResponse = await getReportUploads();
-  const latestUpload = uploadsResponse.uploads[0];
+  const response = await fetch(`${API_BASE_URL}/api/reports/latest`);
 
-  if (!latestUpload) {
+  // The backend returns 404 when nothing has been uploaded yet. That is a
+  // normal empty state, not a failure, so it maps to null.
+  if (response.status === 404) {
     return null;
   }
 
-  return getReportUploadDetail(latestUpload.id);
+  if (!response.ok) {
+    throw new Error(
+      `Failed to load the latest dashboard. Server returned ${response.status}.`,
+    );
+  }
+
+  return response.json();
 }
 
 export function downloadOriginalExcel(uploadId: number): void {

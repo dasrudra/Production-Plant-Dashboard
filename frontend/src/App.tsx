@@ -51,6 +51,20 @@ function App() {
   const isMountedRef = useRef(true);
   const latestUploadIdRef = useRef<number | null>(null);
 
+  async function refreshReportsList() {
+    try {
+      const result = await getReportUploads();
+
+      if (isMountedRef.current) {
+        setReports(result.uploads);
+      }
+    } catch (error) {
+      // A stale Historical Performance card is not worth interrupting the
+      // user for; the KPI cards and charts are already up to date.
+      console.error("Report history could not be refreshed:", error);
+    }
+  }
+
   async function loadLatestDashboard() {
     const shouldSkipAutoLoad =
       sessionStorage.getItem(SESSION_KEY_SKIP_AUTO_LOAD) === "true";
@@ -88,6 +102,11 @@ function App() {
       setSelectedFileName(upload.fileName);
       latestUploadIdRef.current = upload.id;
 
+      // The Historical Performance card reads from `reports`. Refresh it
+      // here, where we already know the latest upload changed, so the
+      // steady-state poll stays at a single request.
+      void refreshReportsList();
+
       localStorage.setItem(
         STORAGE_KEY_DASHBOARD_DATA,
         JSON.stringify(latestDashboardData),
@@ -102,9 +121,6 @@ function App() {
     isMountedRef.current = true;
 
     void loadLatestDashboard();
-    getReportUploads().then((result) => {
-      setReports(result.uploads);
-    });
 
     return () => {
       isMountedRef.current = false;
