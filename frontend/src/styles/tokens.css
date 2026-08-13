@@ -5,6 +5,8 @@
    ============================================================ */
 
 :root {
+  color-scheme: light;
+
   /* ---------- Tier 1: Primitive palette ---------- */
   --slate-950: #020617;
   --slate-900: #0f172a;
@@ -78,6 +80,15 @@
   --surface-subtle: var(--blue-50);
 
   --border-card: rgba(226, 232, 240, 0.9);
+  --highlight-inset: rgba(255, 255, 255, 0.9);
+
+  /* Recharts — SVG attributes accept var(), so charts can follow the theme */
+  --chart-grid: var(--slate-200);
+  --chart-axis: var(--slate-500);
+  --chart-tooltip-bg: var(--white);
+  --chart-tooltip-border: var(--slate-200);
+  --chart-tooltip-text: var(--slate-900);
+  --surface-icon-tile: linear-gradient(135deg, #dbeafe, #eff6ff);
 
   /* Light-tinted panels that must flip with the theme */
   --surface-panel: rgba(248, 250, 252, 0.88);
@@ -204,4 +215,123 @@
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
   --duration-fast: 120ms;
   --duration-base: 200ms;
+}
+
+/* ============================================================
+   DARK THEME
+   Applies ONLY when the user explicitly opts in via the toggle,
+   which sets data-theme="dark" on <html>. Light remains the
+   default for everyone else.
+   ============================================================ */
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* ---------- App background: deep navy, same brand glows ---------- */
+  --surface-app:
+    radial-gradient(
+      circle at top left,
+      rgba(37, 99, 235, 0.22),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at top right,
+      rgba(34, 197, 94, 0.1),
+      transparent 30%
+    ),
+    linear-gradient(135deg, #070c17 0%, #0b1220 42%, #08120f 100%);
+
+  /* ---------- Cards sit ABOVE the background, so they are lighter ---------- */
+  --surface-card: rgba(20, 29, 47, 0.88);
+
+  --surface-raised: linear-gradient(
+    180deg,
+    rgba(25, 35, 55, 0.96),
+    rgba(18, 26, 43, 0.94)
+  );
+
+  --surface-header: linear-gradient(
+    135deg,
+    rgba(24, 34, 54, 0.94),
+    rgba(16, 24, 40, 0.72)
+  );
+
+  --surface-panel: rgba(24, 34, 54, 0.88);
+
+  --surface-th: linear-gradient(180deg, #162034, #111a2c);
+
+  --surface-subtle: #16233d;
+
+  --surface-empty: linear-gradient(
+    135deg,
+    rgba(24, 34, 54, 0.9),
+    rgba(20, 32, 56, 0.72)
+  );
+
+  --surface-module: linear-gradient(
+    135deg,
+    rgba(25, 35, 55, 0.96),
+    rgba(19, 31, 54, 0.84)
+  );
+
+  --surface-icon-tile: linear-gradient(135deg, #1c2f52, #16233d);
+
+  --bg-surface: #111a2c;
+  --bg-surface-muted: #162034;
+
+  /* ---------- Borders ---------- */
+  --border: #22304c;
+  --border-strong: #33456a;
+  --border-brand: #1f3d70;
+  --border-card: rgba(46, 62, 94, 0.9);
+
+  /* ---------- Text ---------- */
+  --text-primary: #e9eef8;
+  --text-secondary: #a8b6cf;
+  --text-muted: #7d8ca8;
+
+  /* ---------- Brand text must LIGHTEN on dark ---------- */
+  --text-brand: #60a5fa;
+  --text-brand-strong: #93c5fd;
+  --text-brand-deep: #bfdbfe;
+
+  /* ---------- Card top highlight: barely there, not a white line ---------- */
+  --highlight-inset: rgba(255, 255, 255, 0.05);
+
+  /* ---------- Charts ---------- */
+  --chart-grid: #22304c;
+  --chart-axis: #94a3b8;
+  --chart-tooltip-bg: #16233d;
+  --chart-tooltip-border: #33456a;
+  --chart-tooltip-text: #e9eef8;
+
+  /* ---------- Charts ---------- */
+  --chart-grid: #22304c;
+  --chart-axis: #94a3b8;
+  --chart-tooltip-bg: #16233d;
+  --chart-tooltip-border: #33456a;
+  --chart-tooltip-text: #e9eef8;
+
+  /* ---------- Status pills inverted: tinted fill, pale text ---------- */
+  --pill-low-bg: rgba(239, 68, 68, 0.16);
+  --pill-low-text: #fca5a5;
+
+  --pill-normal-bg: rgba(245, 158, 11, 0.16);
+  --pill-normal-text: #fcd34d;
+
+  --pill-good-bg: rgba(34, 197, 94, 0.16);
+  --pill-good-text: #86efac;
+
+  --pill-excellent-bg: rgba(14, 165, 233, 0.16);
+  --pill-excellent-text: #7dd3fc;
+
+  --pill-over-bg: rgba(124, 58, 237, 0.2);
+  --pill-over-text: #c4b5fd;
+
+  --pill-brand-bg: rgba(37, 99, 235, 0.2);
+  --pill-brand-text: #93c5fd;
+
+  --pill-danger-bg: rgba(220, 38, 38, 0.14);
+  --pill-danger-text: #fca5a5;
+  --pill-danger-border: rgba(220, 38, 38, 0.32);
 }

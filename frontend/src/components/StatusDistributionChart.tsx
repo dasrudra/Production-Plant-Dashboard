@@ -77,8 +77,17 @@ export function StatusDistributionChart({
                   />
                 ))}
               </Pie>
-              <Tooltip formatter={(value) => `${value} machine group(s)`} />
-              <Legend />
+              <Tooltip
+                formatter={(value) => `${value} machine group(s)`}
+                contentStyle={{
+                  background: "var(--chart-tooltip-bg)",
+                  border: "1px solid var(--chart-tooltip-border)",
+                  borderRadius: "12px",
+                  color: "var(--chart-tooltip-text)",
+                }}
+                itemStyle={{ color: "var(--chart-tooltip-text)" }}
+              />
+              <Legend wrapperStyle={{ color: "var(--chart-axis)" }} />
             </PieChart>
           </ResponsiveContainer>
         </div>

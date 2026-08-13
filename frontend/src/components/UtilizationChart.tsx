@@ -56,25 +56,39 @@ export function UtilizationChart({ rows }: UtilizationChartProps) {
             data={rows}
             margin={{ top: 20, right: 20, left: 0, bottom: 10 }}
           >
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+            <CartesianGrid
+              strokeDasharray="3 3"
+              vertical={false}
+              stroke="var(--chart-grid)"
+            />
             <XAxis
               dataKey="machineType"
               tickLine={false}
               axisLine={false}
-              tick={{ fontSize: 12 }}
+              tick={{ fontSize: 12, fill: "var(--chart-axis)" }}
             />
             <YAxis
               unit="%"
               tickLine={false}
               axisLine={false}
-              tick={{ fontSize: 12 }}
+              tick={{ fontSize: 12, fill: "var(--chart-axis)" }}
               domain={[0, axisMax]}
               ticks={axisTicks}
             />
             <Tooltip
               formatter={(value) => `${formatDecimal(Number(value), 2)}%`}
-              labelStyle={{ fontWeight: 800 }}
               cursor={{ fill: "rgba(37, 99, 235, 0.06)" }}
+              contentStyle={{
+                background: "var(--chart-tooltip-bg)",
+                border: "1px solid var(--chart-tooltip-border)",
+                borderRadius: "12px",
+                color: "var(--chart-tooltip-text)",
+              }}
+              labelStyle={{
+                fontWeight: 800,
+                color: "var(--chart-tooltip-text)",
+              }}
+              itemStyle={{ color: "var(--chart-tooltip-text)" }}
             />
             <ReferenceLine
               y={80}

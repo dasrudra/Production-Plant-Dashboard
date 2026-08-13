@@ -38,25 +38,40 @@ export function TargetCapacityChart({ rows }: TargetCapacityChartProps) {
             margin={{ top: 20, right: 20, left: 10, bottom: 10 }}
             barGap={8}
           >
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+            <CartesianGrid
+              strokeDasharray="3 3"
+              vertical={false}
+              stroke="var(--chart-grid)"
+            />
             <XAxis
               dataKey="machineType"
               tickLine={false}
               axisLine={false}
-              tick={{ fontSize: 12 }}
+              tick={{ fontSize: 12, fill: "var(--chart-axis)" }}
             />
             <YAxis
               tickFormatter={(value) => formatNumber(Number(value))}
               tickLine={false}
               axisLine={false}
-              tick={{ fontSize: 12 }}
+              tick={{ fontSize: 12, fill: "var(--chart-axis)" }}
               width={80}
             />
             <Tooltip
               formatter={(value) => formatNumber(Number(value))}
-              labelStyle={{ fontWeight: 800 }}
+              cursor={{ fill: "rgba(37, 99, 235, 0.06)" }}
+              contentStyle={{
+                background: "var(--chart-tooltip-bg)",
+                border: "1px solid var(--chart-tooltip-border)",
+                borderRadius: "12px",
+                color: "var(--chart-tooltip-text)",
+              }}
+              labelStyle={{
+                fontWeight: 800,
+                color: "var(--chart-tooltip-text)",
+              }}
+              itemStyle={{ color: "var(--chart-tooltip-text)" }}
             />
-            <Legend />
+            <Legend wrapperStyle={{ color: "var(--chart-axis)" }} />
             <Bar
               dataKey="monthlyTarget"
               name="Monthly Target"
