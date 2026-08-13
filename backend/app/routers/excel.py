@@ -12,10 +12,34 @@ from app.services.excel_parser import analyze_capacity_plan_excel
 
 router = APIRouter()
 
-UPLOAD_DIR = Path("uploads")
+# excel.py location:
+# backend/app/routers/excel.py
+#
+# parents[0] = backend/app/routers
+# parents[1] = backend/app
+# parents[2] = backend
+#
+# Resolved from __file__ so the folder is the same no matter which
+# directory uvicorn was started from. Must match reports.py.
+BACKEND_DIR = Path(__file__).resolve().parents[2]
+UPLOAD_DIR = BACKEND_DIR / "uploads"
 UPLOAD_DIR.mkdir(exist_ok=True)
 
 ALLOWED_EXTENSIONS = {".xlsx", ".xlsm"}
+
+
+def discard_saved_file(saved_file_path: Path) -> None:
+    """
+    Delete an uploaded file that will not be recorded in the database.
+
+    Called whenever a request returns early, so the uploads folder never
+    accumulates files that no dashboard row points at.
+    """
+    try:
+        saved_file_path.unlink(missing_ok=True)
+    except OSError:
+        # A file we cannot delete is not worth failing the request over.
+        pass
 
 
 @router.post("/analyze")
@@ -44,6 +68,7 @@ async def analyze_excel(file: UploadFile = File(...)):
         result = analyze_capacity_plan_excel(saved_file_path)
 
         if not result.get("success"):
+            discard_saved_file(saved_file_path)
             return result
 
         result["fileName"] = original_filename
@@ -54,6 +79,8 @@ async def analyze_excel(file: UploadFile = File(...)):
         )
 
         if existing_dashboard is not None:
+            discard_saved_file(saved_file_path)
+
             return {
                 "success": False,
                 "duplicate": True,
@@ -75,6 +102,8 @@ async def analyze_excel(file: UploadFile = File(...)):
         return result
 
     except Exception as error:
+        discard_saved_file(saved_file_path)
+
         raise HTTPException(
             status_code=500,
             detail=f"Failed to analyze Excel file: {str(error)}",
@@ -105,8 +134,9 @@ async def replace_excel(
         result = analyze_capacity_plan_excel(saved_file_path)
 
         if not result.get("success"):
-            return result 
-        
+            discard_saved_file(saved_file_path)
+            return result
+
         result["fileName"] = original_filename
         result["savedFileName"] = saved_file_name
 
@@ -128,6 +158,8 @@ async def replace_excel(
         return result
 
     except Exception as error:
+        discard_saved_file(saved_file_path)
+
         raise HTTPException(
             status_code=500,
             detail=f"Failed to replace dashboard: {str(error)}",
