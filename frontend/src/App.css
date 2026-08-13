@@ -128,7 +128,7 @@ input {
 
 .eyebrow {
   margin: 0 0 8px;
-  color: #2563eb;
+  color: var(--text-brand);
   font-weight: var(--weight-black);
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -151,7 +151,7 @@ input {
 
 .header-meta {
   min-width: 225px;
-  background: rgba(248, 250, 252, 0.88);
+  background: var(--surface-panel);
   border: 1px solid var(--border-brand);
   border-radius: 20px;
   padding: 18px;
@@ -250,9 +250,9 @@ input {
 }
 
 .error-box {
-  background: #fef2f2;
-  color: #991b1b;
-  border: 1px solid #fecaca;
+  background: var(--pill-danger-bg);
+  color: var(--pill-danger-text);
+  border: 1px solid var(--pill-danger-border);
   padding: 16px 18px;
   border-radius: 18px;
   box-shadow: 0 16px 36px rgba(153, 27, 27, 0.08);
@@ -385,37 +385,33 @@ tbody tr:hover {
 }
 
 .status-low {
-  color: #991b1b;
-  background: #fee2e2;
+  color: var(--pill-danger-text);
+  background: var(--pill-low-bg);
 }
 
 .status-normal {
-  color: #92400e;
-  background: #fef3c7;
+  color: var(--pill-normal-text);
+  background: var(--pill-normal-bg);
 }
 
 .status-good {
-  color: #166534;
-  background: #dcfce7;
+  color: var(--pill-good-text);
+  background: var(--pill-good-bg);
 }
 
 .status-excellent {
-  color: #075985;
-  background: #e0f2fe;
+  color: var(--pill-excellent-text);
+  background: var(--pill-excellent-bg);
 }
 
 .status-over-capacity {
-  color: #5b21b6;
-  background: #ede9fe;
+  color: var(--pill-over-text);
+  background: var(--pill-over-bg);
 }
 
 .empty-state {
   border: 1px dashed var(--border-strong);
-  background: linear-gradient(
-    135deg,
-    rgba(248, 250, 252, 0.9),
-    rgba(239, 246, 255, 0.72)
-  );
+  background: var(--surface-empty);
   color: var(--text-secondary);
   padding: 25px;
   border-radius: 18px;
@@ -717,7 +713,7 @@ tbody tr:hover {
 
 .table-search-box input:focus,
 .table-filter-box select:focus {
-  border-color: #2563eb;
+  border-color: var(--text-brand);
   box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
 }
 
@@ -803,11 +799,7 @@ tbody tr:hover {
 
 .module-placeholder-header {
   background:
-    linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.96),
-      rgba(239, 246, 255, 0.84)
-    ),
+    var(--surface-module),
     radial-gradient(
       circle at top right,
       rgba(34, 197, 94, 0.16),
@@ -1046,7 +1038,7 @@ tbody tr:hover {
 }
 
 .reports-search-control input:focus {
-  border-color: #2563eb;
+  border-color: var(--text-brand);
   box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.11);
 }
 
@@ -1115,7 +1107,7 @@ tbody tr:hover {
 .reports-database-badge strong {
   display: block;
   margin-top: 3px;
-  color: #1d4ed8;
+  color: var(--pill-brand-text);
   font-size: var(--text-md);
 }
 
@@ -1133,8 +1125,8 @@ tbody tr:hover {
   display: inline-flex;
   padding: 5px 8px;
   border-radius: 999px;
-  color: #166534;
-  background: #dcfce7;
+  color: var(--pill-good-text);
+  background: var(--pill-good-bg);
   font-size: var(--text-2xs);
   font-weight: var(--weight-black);
   text-transform: uppercase;
@@ -1191,13 +1183,13 @@ tbody tr:hover {
 }
 
 .report-month-chip {
-  color: #1d4ed8;
-  background: #dbeafe;
+  color: var(--pill-brand-text);
+  background: var(--pill-brand-bg);
 }
 
 .report-utilization-chip {
-  color: #166534;
-  background: #dcfce7;
+  color: var(--pill-good-text);
+  background: var(--pill-good-bg);
 }
 
 .report-date-cell {
@@ -1381,7 +1373,7 @@ tbody tr:hover {
   justify-content: center;
   min-height: 48px;
   background: var(--bg-surface);
-  color: #1551b5;
+  color: var(--text-brand-strong);
   box-shadow:
     0 18px 38px rgba(15, 23, 42, 0.22),
     inset 0 1px 0 rgba(255, 255, 255, 0.92);
@@ -1389,7 +1381,7 @@ tbody tr:hover {
 
 .hero-upload-button:hover {
   background: var(--surface-subtle);
-  color: #0f3b85;
+  color: var(--text-brand-deep);
   box-shadow: 0 22px 46px rgba(15, 23, 42, 0.28);
 }
 
@@ -1631,7 +1623,7 @@ tbody tr:hover {
   padding: 12px 18px;
   border-radius: 999px;
   background: var(--surface-subtle);
-  color: #1551b5;
+  color: var(--text-brand-strong);
   font-weight: var(--weight-bold);
 }
 
@@ -1872,7 +1864,7 @@ tbody tr:hover {
 .comparison-selector label {
   font-size: var(--text-md);
   font-weight: var(--weight-bold);
-  color: #1e3a8a;
+  color: var(--text-brand-strong);
 }
 
 .comparison-selector select {
@@ -1892,7 +1884,7 @@ tbody tr:hover {
 
 .comparison-selector select:focus {
   outline: none;
-  border-color: #2563eb;
+  border-color: var(--text-brand);
   box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
 }
 

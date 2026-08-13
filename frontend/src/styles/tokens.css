@@ -44,11 +44,89 @@
   --bg-surface-muted: var(--slate-50);
   --bg-sidebar: var(--slate-900);
 
+  /* Composed surfaces — a token can hold an entire multi-layer value,
+     so dark mode swaps the whole stack in one line. */
+  --surface-app:
+    radial-gradient(
+      circle at top left,
+      rgba(37, 99, 235, 0.18),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at top right,
+      rgba(34, 197, 94, 0.14),
+      transparent 30%
+    ),
+    linear-gradient(135deg, #eef4ff 0%, #f8fafc 42%, #edfdf5 100%);
+
+  --surface-card: rgba(255, 255, 255, 0.9);
+
+  --surface-raised: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.96),
+    rgba(248, 250, 252, 0.94)
+  );
+
+  --surface-header: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.94),
+    rgba(255, 255, 255, 0.72)
+  );
+
+  --surface-th: linear-gradient(180deg, #f8fafc, #eef2ff);
+
+  --surface-subtle: var(--blue-50);
+
+  --border-card: rgba(226, 232, 240, 0.9);
+
+  /* Light-tinted panels that must flip with the theme */
+  --surface-panel: rgba(248, 250, 252, 0.88);
+
+  --surface-empty: linear-gradient(
+    135deg,
+    rgba(248, 250, 252, 0.9),
+    rgba(239, 246, 255, 0.72)
+  );
+
+  --surface-module: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.96),
+    rgba(239, 246, 255, 0.84)
+  );
+
+  /* Brand-coloured text sitting on light surfaces */
+  --text-brand: var(--blue-600);
+  --text-brand-strong: var(--blue-800);
+  --text-brand-deep: #0f3b85;
+
+  /* Status pills — background and text move together as a pair,
+     so dark mode can invert both without breaking contrast. */
+  --pill-low-bg: #fee2e2;
+  --pill-low-text: #991b1b;
+
+  --pill-normal-bg: #fef3c7;
+  --pill-normal-text: #92400e;
+
+  --pill-good-bg: #dcfce7;
+  --pill-good-text: #166534;
+
+  --pill-excellent-bg: #e0f2fe;
+  --pill-excellent-text: #075985;
+
+  --pill-over-bg: #ede9fe;
+  --pill-over-text: #5b21b6;
+
+  --pill-brand-bg: #dbeafe;
+  --pill-brand-text: #1d4ed8;
+
+  --pill-danger-bg: #fef2f2;
+  --pill-danger-text: #991b1b;
+  --pill-danger-border: #fecaca;
+
   /* ---------- Tier 2: Semantic — text ---------- */
   --text-primary: var(--slate-900);
   --text-secondary: var(--slate-600);
   --text-muted: var(--slate-500);
-  --text-inverse: var(--white);
 
   /* ---------- Tier 2: Semantic — brand ---------- */
   --brand: var(--blue-600);
@@ -60,6 +138,13 @@
   /* ---------- Tier 2: Semantic — borders ---------- */
   --border: var(--slate-200);
   --border-strong: var(--slate-300);
+  --border-brand: var(--blue-100);
+
+  /* Text used on top of dark/brand surfaces */
+  --text-on-dark: var(--slate-300);
+  --text-on-dark-strong: var(--white);
+  --text-on-brand: var(--blue-100);
+  --text-on-brand-muted: var(--blue-200);
 
   /* ---------- Tier 2: Semantic — status ----------
      Must stay in sync with STATUS_COLORS in
@@ -97,19 +182,23 @@
   /* ---------- Typography ---------- */
   --font-sans: "Inter", "Segoe UI", Arial, sans-serif;
 
-  --text-xs: 12px;
-  --text-sm: 13px;
-  --text-base: 15px;
-  --text-lg: 18px;
-  --text-xl: 22px;
-  --text-2xl: 28px;
-  --text-3xl: 36px;
+  --text-2xs: 11px; /* micro labels, uppercase eyebrows, badges */
+  --text-xs: 12px; /* pills, small meta */
+  --text-sm: 13px; /* secondary text */
+  --text-md: 14px; /* table cells, buttons */
+  --text-base: 16px; /* body copy */
+  --text-lg: 18px; /* card subtitles, date values */
+  --text-xl: 22px; /* card headings */
+  --text-2xl: 28px; /* section headings */
+  --text-3xl: 32px; /* hero headings, KPI values */
+  --text-4xl: 38px; /* page headings */
 
   --weight-normal: 400;
   --weight-medium: 500;
   --weight-semibold: 600;
   --weight-bold: 700;
-  --weight-black: 800;
+  --weight-extrabold: 800;
+  --weight-black: 900;
 
   /* ---------- Motion ---------- */
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
