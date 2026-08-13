@@ -16,6 +16,17 @@
       content="KPP Plant Dashboard for production capacity, activity planning, shipment, and material overview."
     />
     <title>KPP Plant Dashboard</title>
+    <script>
+      (function () {
+        try {
+          var saved = localStorage.getItem("kpp-dashboard-theme");
+          document.documentElement.dataset.theme =
+            saved === "dark" ? "dark" : "light";
+        } catch (e) {
+          document.documentElement.dataset.theme = "light";
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

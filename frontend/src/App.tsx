@@ -20,6 +20,7 @@ import type { ExcelAnalyzeResponse } from "./types/dashboard";
 import type { ReportUploadSummary } from "./types/reports";
 import { formatNumber, formatPercent } from "./utils/formatters";
 import { ConfirmationModal } from "./components/ConfirmationModal";
+import { ThemeToggle } from "./components/ThemeToggle";
 
 import "./App.css";
 
@@ -251,17 +252,21 @@ function App() {
             <UploadSuccessBanner data={dashboardData} />
           </div>
 
-          <div className="header-meta">
-            <div className="meta-item">
-              <span>Plan Month</span>
-              <strong>{summary?.month || "Not uploaded"}</strong>
-            </div>
+          <div className="hero-right-column">
+            <ThemeToggle />
 
-            <div className="meta-divider" />
+            <div className="header-meta">
+              <div className="meta-item">
+                <span>Plan Month</span>
+                <strong>{summary?.month || "Not uploaded"}</strong>
+              </div>
 
-            <div className="meta-item">
-              <span>Working Section</span>
-              <strong>{summary?.workingSection || "Not uploaded"}</strong>
+              <div className="meta-divider" />
+
+              <div className="meta-item">
+                <span>Working Section</span>
+                <strong>{summary?.workingSection || "Not uploaded"}</strong>
+              </div>
             </div>
           </div>
         </header>
