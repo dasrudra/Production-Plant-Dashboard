@@ -304,7 +304,9 @@ export function ReportsPage({ onOpenDashboard }: ReportsPageProps) {
                           <span className="report-file-icon">XLSX</span>
 
                           <div>
-                            <strong>{upload.fileName}</strong>
+                            <strong title={upload.fileName}>
+                              {upload.fileName}
+                            </strong>
                             <span>{upload.sourceSheet}</span>
                           </div>
                         </div>

@@ -339,7 +339,7 @@ input {
 table {
   border-collapse: collapse;
   width: 100%;
-  min-width: 1100px;
+  min-width: 1200px;
   background: var(--bg-surface);
 }
 
@@ -1137,7 +1137,7 @@ tbody tr:hover {
   display: flex;
   align-items: center;
   gap: 10px;
-  min-width: 235px;
+  min-width: 340px;
 }
 
 .report-file-icon {
@@ -1160,11 +1160,13 @@ tbody tr:hover {
 }
 
 .report-file-cell strong {
-  max-width: 220px;
-  overflow: hidden;
   color: var(--text-primary);
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.35;
+
+  /* Wrap rather than truncate. The month is at the END of the filename,
+     which is exactly what an ellipsis would cut off — so truncation
+     removes the only part that identifies the report. */
+  overflow-wrap: anywhere;
 }
 
 .report-file-cell div span {
