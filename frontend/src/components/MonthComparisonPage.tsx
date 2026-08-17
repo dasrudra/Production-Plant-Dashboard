@@ -5,6 +5,37 @@ import {
   getReportUploadDetail,
 } from "../services/reportsApi";
 import type { ReportUploadSummary, ReportUploadDetail } from "../types/reports";
+
+const STORAGE_KEY_COMPARISON = "kpp-dashboard-comparison-selection";
+
+type StoredSelection = {
+  leftId: number;
+  rightId: number;
+};
+
+function readStoredSelection(): StoredSelection | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY_COMPARISON);
+
+    if (!raw) {
+      return null;
+    }
+
+    const parsed = JSON.parse(raw) as StoredSelection;
+
+    if (
+      typeof parsed?.leftId === "number" &&
+      typeof parsed?.rightId === "number"
+    ) {
+      return parsed;
+    }
+  } catch {
+    // Blocked or corrupt storage: start with no saved comparison.
+  }
+
+  return null;
+}
+
 function numberDifference(current: number, previous: number) {
   return current - previous;
 }
@@ -23,6 +54,31 @@ export function MonthComparisonPage() {
 
   const [compareLoading, setCompareLoading] = useState(false);
 
+  async function runComparison(leftId: number, rightId: number) {
+    setCompareLoading(true);
+
+    try {
+      const leftResult = await getReportUploadDetail(leftId);
+
+      const rightResult = await getReportUploadDetail(rightId);
+
+      setLeftDashboard(leftResult.upload);
+
+      setRightDashboard(rightResult.upload);
+
+      try {
+        localStorage.setItem(
+          STORAGE_KEY_COMPARISON,
+          JSON.stringify({ leftId, rightId }),
+        );
+      } catch {
+        // Not remembering the comparison is not worth an error.
+      }
+    } finally {
+      setCompareLoading(false);
+    }
+  }
+
   useEffect(() => {
     async function loadReports() {
       setLoading(true);
@@ -31,6 +87,25 @@ export function MonthComparisonPage() {
         const result = await getReportUploads();
 
         setReports(result.uploads);
+
+        const availableIds = new Set(result.uploads.map((report) => report.id));
+        const stored = readStoredSelection();
+
+        // Restore a saved comparison only if BOTH reports still exist.
+        // Either one may have been deleted since it was last run, and
+        // requesting a deleted id would 404.
+        if (
+          stored &&
+          availableIds.has(stored.leftId) &&
+          availableIds.has(stored.rightId)
+        ) {
+          setLeftMonthId(stored.leftId);
+          setRightMonthId(stored.rightId);
+
+          await runComparison(stored.leftId, stored.rightId);
+
+          return;
+        }
 
         if (result.uploads.length >= 1) {
           setLeftMonthId(result.uploads[0].id);
@@ -52,19 +127,7 @@ export function MonthComparisonPage() {
       return;
     }
 
-    setCompareLoading(true);
-
-    try {
-      const leftResult = await getReportUploadDetail(leftMonthId);
-
-      const rightResult = await getReportUploadDetail(rightMonthId);
-
-      setLeftDashboard(leftResult.upload);
-
-      setRightDashboard(rightResult.upload);
-    } finally {
-      setCompareLoading(false);
-    }
+    await runComparison(leftMonthId, rightMonthId);
   }
 
   return (

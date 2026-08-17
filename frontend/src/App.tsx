@@ -26,6 +26,7 @@ import "./App.css";
 
 const STORAGE_KEY_DASHBOARD_DATA = "kpp-dashboard-latest-data";
 const STORAGE_KEY_FILE_NAME = "kpp-dashboard-latest-file-name";
+const STORAGE_KEY_ACTIVE_PAGE = "kpp-dashboard-active-page";
 const SESSION_KEY_SKIP_AUTO_LOAD = "kpp-dashboard-skip-auto-load";
 
 type PageKey = "dashboard" | "reports" | "comparison";
@@ -36,8 +37,28 @@ const NAV_ITEMS: { key: PageKey; label: string }[] = [
   { key: "comparison", label: "Month Comparison" },
 ];
 
+function readStoredPage(): PageKey {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY_ACTIVE_PAGE);
+
+    // Validate against the known keys. Anything else — a stale value from
+    // an older build, or a hand-edited entry — falls back to the dashboard.
+    if (
+      saved === "dashboard" ||
+      saved === "reports" ||
+      saved === "comparison"
+    ) {
+      return saved;
+    }
+  } catch {
+    // Storage can be blocked in private mode; the default is fine.
+  }
+
+  return "dashboard";
+}
+
 function App() {
-  const [activePage, setActivePage] = useState<PageKey>("dashboard");
+  const [activePage, setActivePage] = useState<PageKey>(readStoredPage);
   const [dashboardData, setDashboardData] =
     useState<ExcelAnalyzeResponse | null>(null);
   const [reports, setReports] = useState<ReportUploadSummary[]>([]);
@@ -126,6 +147,14 @@ function App() {
       isMountedRef.current = false;
     };
   }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY_ACTIVE_PAGE, activePage);
+    } catch {
+      // Not remembering the page is not worth interrupting the user.
+    }
+  }, [activePage]);
 
   useEffect(() => {
     const intervalId = window.setInterval(() => {
