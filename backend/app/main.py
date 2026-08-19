@@ -5,6 +5,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.database.db import initialize_database
 from app.routers import excel, reports
@@ -18,6 +19,11 @@ from app.routers import excel, reports
 # Resolved from __file__ for the same reason as UPLOAD_DIR: the .env file
 # must be found no matter which directory uvicorn was started from.
 BACKEND_DIR = Path(__file__).resolve().parents[1]
+
+# BACKEND_DIR.parent is the project root, so this is:
+#   <project root>/frontend/dist
+# It exists only after `npm run build` has been run.
+FRONTEND_DIST = BACKEND_DIR.parent / "frontend" / "dist"
 
 load_dotenv(BACKEND_DIR / ".env")
 
@@ -70,13 +76,6 @@ app.add_middleware(
 )
 
 
-@app.get("/")
-def root():
-    return {
-        "message": "KPP Plant Dashboard Backend is running"
-    }
-
-
 @app.get("/health")
 def health_check():
     return {
@@ -87,3 +86,17 @@ def health_check():
 
 app.include_router(excel.router, prefix="/api/excel", tags=["Excel"])
 app.include_router(reports.router, prefix="/api/reports", tags=["Reports"])
+
+
+# Serve the built React app. This MUST come after the API routers:
+# routes are matched in registration order, and a mount at "/" would
+# otherwise swallow every /api request.
+#
+# The directory check keeps the backend usable before the first build,
+# which is how you will run it while developing against the Vite server.
+if FRONTEND_DIST.is_dir():
+    app.mount(
+        "/",
+        StaticFiles(directory=FRONTEND_DIST, html=True),
+        name="frontend",
+    )

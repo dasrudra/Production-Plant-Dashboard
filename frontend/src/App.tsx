@@ -268,7 +268,7 @@ function App() {
       <>
         <header className="page-header dashboard-hero">
           <div className="hero-left-content">
-            <p className="eyebrow">KPP Division</p>
+            <p className="eyebrow">Production Division</p>
 
             <h1>Production Capacity Dashboard</h1>
 
@@ -416,7 +416,7 @@ function App() {
       <div className="app-shell">
         <aside className="sidebar">
           <div className="brand-block">
-            <div className="brand-mark">KPP</div>
+            <div className="brand-mark">PPD</div>
 
             <div>
               <h1>Plant Dashboard</h1>
